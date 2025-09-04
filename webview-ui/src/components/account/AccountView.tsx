@@ -25,7 +25,7 @@ export const AccountView = ({ userInfo, isAuthenticated, cloudApiUrl, onDone }: 
 	const { remoteControlEnabled, setRemoteControlEnabled } = useExtensionState()
 	const wasAuthenticatedRef = useRef(false)
 
-	const rooLogoUri = (window as any).IMAGES_BASE_URI + "/roo-logo.svg"
+	const rooLogoUri = (window as any).IMAGES_BASE_URI + "/alchemi-code-logo.svg"
 
 	// Track authentication state changes to detect successful logout
 	useEffect(() => {

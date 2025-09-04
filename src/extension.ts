@@ -113,7 +113,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		}
 	}
 
-	// Initialize Roo Code Cloud service.
+	// Initialize Alchemi Code Cloud service.
 	const cloudService = await CloudService.createInstance(context, cloudLogger)
 
 	try {

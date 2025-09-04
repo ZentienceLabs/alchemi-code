@@ -22,7 +22,7 @@ vi.mock("@src/i18n/TranslationContext", () => ({
 	useAppTranslation: () => ({
 		t: (key: string, options?: { version: string }) => {
 			if (key === "chat:announcement.title") {
-				return `🎉 Roo Code ${options?.version} Released`
+				return `🎉 Alchemi Code ${options?.version} Released`
 			}
 			if (key === "chat:announcement.stealthModel.feature") {
 				return "Stealth reasoning model with advanced capabilities"
@@ -31,7 +31,7 @@ vi.mock("@src/i18n/TranslationContext", () => ({
 				return "Note: This is an experimental feature"
 			}
 			if (key === "chat:announcement.stealthModel.connectButton") {
-				return "Connect to Roo Code Cloud"
+				return "Connect to Alchemi Code Cloud"
 			}
 			// Return key for other translations not relevant to this test
 			return key
@@ -75,7 +75,7 @@ describe("Announcement", () => {
 		render(<Announcement hideAnnouncement={mockHideAnnouncement} />)
 
 		// Check if the mocked version number is present in the title
-		expect(screen.getByText(`🎉 Roo Code ${expectedVersion} Released`)).toBeInTheDocument()
+		expect(screen.getByText(`🎉 Alchemi Code ${expectedVersion} Released`)).toBeInTheDocument()
 
 		// Check if the stealth model feature is displayed (using partial match due to bullet point)
 		expect(screen.getByText(/Stealth reasoning model with advanced capabilities/)).toBeInTheDocument()
@@ -84,6 +84,6 @@ describe("Announcement", () => {
 		expect(screen.getByText("Note: This is an experimental feature")).toBeInTheDocument()
 
 		// Check if the connect button is displayed (since cloudIsAuthenticated is false in the mock)
-		expect(screen.getByText("Connect to Roo Code Cloud")).toBeInTheDocument()
+		expect(screen.getByText("Connect to Alchemi Code Cloud")).toBeInTheDocument()
 	})
 })

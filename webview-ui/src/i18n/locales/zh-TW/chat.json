@@ -1,5 +1,5 @@
 {
-	"greeting": "歡迎使用 Roo Code！",
+	"greeting": "歡迎使用 Alchemi Code！",
 	"task": {
 		"title": "工作",
 		"expand": "展開工作",
@@ -21,7 +21,7 @@
 		"sharePublicly": "公開分享",
 		"sharePubliclyDescription": "任何擁有連結的人都可存取",
 		"connectToCloud": "連線至雲端",
-		"connectToCloudDescription": "登入 Roo Code Cloud 以分享工作",
+		"connectToCloudDescription": "登入 Alchemi Code Cloud 以分享工作",
 		"sharingDisabledByOrganization": "組織已停用分享功能",
 		"shareSuccessOrganization": "組織連結已複製到剪貼簿",
 		"shareSuccessPublic": "公開連結已複製到剪貼簿"
@@ -267,20 +267,20 @@
 	"autoApprove": {
 		"title": "自動核准：",
 		"none": "無",
-		"description": "自動核准讓 Roo Code 可以在無需徵求您同意的情況下執行操作。請僅對您完全信任的動作啟用此功能。您可以在<settingsLink>設定</settingsLink>中進行更詳細的調整。",
+		"description": "自動核准讓 Alchemi Code 可以在無需徵求您同意的情況下執行操作。請僅對您完全信任的動作啟用此功能。您可以在<settingsLink>設定</settingsLink>中進行更詳細的調整。",
 		"selectOptionsFirst": "請至少選擇以下一個選項以啟用自動核准",
 		"toggleAriaLabel": "切換自動核准",
 		"disabledAriaLabel": "自動核准已停用 - 請先選取選項"
 	},
 	"announcement": {
-		"title": "🎉 Roo Code {{version}} 已發布",
+		"title": "🎉 Alchemi Code {{version}} 已發布",
 		"stealthModel": {
-			"feature": "<bold>限時免費隱形模型</bold> - 一個在代理程式編程方面表現出色的超快推理模型，擁有 262k 上下文視窗，透過 Roo Code Cloud 提供。",
+			"feature": "<bold>限時免費隱形模型</bold> - 一個在代理程式編程方面表現出色的超快推理模型，擁有 262k 上下文視窗，透過 Alchemi Code Cloud 提供。",
 			"note": "(注意：提示和完成會被模型創建者記錄並用於改進模型)",
-			"connectButton": "連接到 Roo Code Cloud",
-			"selectModel": "在<br/><settingsLink>設定</settingsLink>中從 Roo Code Cloud 提供商選擇 <code>roo/sonic</code> 開始使用"
+			"connectButton": "連接到 Alchemi Code Cloud",
+			"selectModel": "在<br/><settingsLink>設定</settingsLink>中從 Alchemi Code Cloud 提供商選擇 <code>roo/sonic</code> 開始使用"
 		},
-		"description": "Roo Code {{version}} 帶來強大的新功能和重大改進，提升您的開發工作流程。",
+		"description": "Alchemi Code {{version}} 帶來強大的新功能和重大改進，提升您的開發工作流程。",
 		"whatsNew": "新功能",
 		"feature1": "<bold>訊息佇列</bold>：在 Roo 工作時將多個訊息排入佇列，讓您可以不間斷地繼續規劃工作流程。",
 		"feature2": "<bold>自訂斜線命令</bold>：建立個人化斜線命令，快速存取常用提示詞和工作流程，具備完整的 UI 管理功能。",
@@ -332,7 +332,7 @@
 	"profileViolationWarning": "目前設定檔與您的組織設定不相容",
 	"shellIntegration": {
 		"title": "命令執行警告",
-		"description": "您的命令正在沒有 VSCode 終端機 Shell 整合的情況下執行。若要隱藏此警告，您可以在 <settingsLink>Roo Code 設定</settingsLink> 的<strong>終端機</strong>區塊中停用 Shell 整合，或使用下方的連結來排解 VSCode 終端機整合問題。",
+		"description": "您的命令正在沒有 VSCode 終端機 Shell 整合的情況下執行。若要隱藏此警告，您可以在 <settingsLink>Alchemi Code 設定</settingsLink> 的<strong>終端機</strong>區塊中停用 Shell 整合，或使用下方的連結來排解 VSCode 終端機整合問題。",
 		"troubleshooting": "點選此處查看 Shell 整合文件。"
 	},
 	"ask": {
@@ -358,7 +358,7 @@
 		"ariaLabel": "版本 {{version}} - 點選查看發布說明"
 	},
 	"rooCloudCTA": {
-		"title": "Roo Code Cloud 正在進化！",
+		"title": "Alchemi Code Cloud 正在進化！",
 		"description": "在雲端執行 Roomote 遠端代理、隨時隨地存取您的工作、與他人協作等等。",
 		"joinWaitlist": "註冊以獲得最新更新。"
 	},

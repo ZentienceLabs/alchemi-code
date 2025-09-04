@@ -1,6 +1,6 @@
 {
 	"extension": {
-		"name": "Roo Code",
+		"name": "Alchemi Code",
 		"description": "您編輯器中的完整 AI 開發團隊。"
 	},
 	"number_format": {
@@ -101,7 +101,7 @@
 			"completionError": "Cerebras 完成錯誤：{{error}}"
 		},
 		"roo": {
-			"authenticationRequired": "Roo 提供者需要雲端認證。請登入 Roo Code Cloud。"
+			"authenticationRequired": "Roo 提供者需要雲端認證。請登入 Alchemi Code Cloud。"
 		},
 		"mode_import_failed": "匯入模式失敗：{{error}}"
 	},
@@ -188,8 +188,8 @@
 	},
 	"mdm": {
 		"errors": {
-			"cloud_auth_required": "您的組織需要 Roo Code Cloud 身份驗證。請登入以繼續。",
-			"organization_mismatch": "您必須使用組織的 Roo Code Cloud 帳戶進行身份驗證。",
+			"cloud_auth_required": "您的組織需要 Alchemi Code Cloud 身份驗證。請登入以繼續。",
+			"organization_mismatch": "您必須使用組織的 Alchemi Code Cloud 帳戶進行身份驗證。",
 			"verification_failed": "無法驗證組織身份驗證。"
 		},
 		"info": {

@@ -1,5 +1,5 @@
 {
-	"greeting": "Selamat datang di Roo Code",
+	"greeting": "Selamat datang di Alchemi Code",
 	"task": {
 		"title": "Tugas",
 		"expand": "Perluas tugas",
@@ -21,7 +21,7 @@
 		"sharePublicly": "Bagikan secara publik",
 		"sharePubliclyDescription": "Siapa pun dengan tautan dapat mengakses",
 		"connectToCloud": "Hubungkan ke Cloud",
-		"connectToCloudDescription": "Masuk ke Roo Code Cloud untuk berbagi tugas",
+		"connectToCloudDescription": "Masuk ke Alchemi Code Cloud untuk berbagi tugas",
 		"sharingDisabledByOrganization": "Berbagi dinonaktifkan oleh organisasi",
 		"shareSuccessOrganization": "Tautan organisasi disalin ke clipboard",
 		"shareSuccessPublic": "Tautan publik disalin ke clipboard"
@@ -270,20 +270,20 @@
 	"autoApprove": {
 		"title": "Auto-approve:",
 		"none": "Tidak Ada",
-		"description": "Auto-approve memungkinkan Roo Code melakukan aksi tanpa meminta izin. Hanya aktifkan untuk aksi yang benar-benar kamu percayai. Konfigurasi lebih detail tersedia di <settingsLink>Pengaturan</settingsLink>.",
+		"description": "Auto-approve memungkinkan Alchemi Code melakukan aksi tanpa meminta izin. Hanya aktifkan untuk aksi yang benar-benar kamu percayai. Konfigurasi lebih detail tersedia di <settingsLink>Pengaturan</settingsLink>.",
 		"selectOptionsFirst": "Pilih setidaknya satu opsi di bawah untuk mengaktifkan persetujuan otomatis",
 		"toggleAriaLabel": "Beralih persetujuan otomatis",
 		"disabledAriaLabel": "Persetujuan otomatis dinonaktifkan - pilih opsi terlebih dahulu"
 	},
 	"announcement": {
-		"title": "🎉 Roo Code {{version}} Dirilis",
+		"title": "🎉 Alchemi Code {{version}} Dirilis",
 		"stealthModel": {
-			"feature": "<bold>Model stealth GRATIS waktu terbatas</bold> - Model penalaran super cepat yang unggul dalam coding agentik dengan jendela konteks 262k, tersedia melalui Roo Code Cloud.",
+			"feature": "<bold>Model stealth GRATIS waktu terbatas</bold> - Model penalaran super cepat yang unggul dalam coding agentik dengan jendela konteks 262k, tersedia melalui Alchemi Code Cloud.",
 			"note": "(Catatan: prompt dan completion dicatat oleh pembuat model dan digunakan untuk meningkatkan model)",
-			"connectButton": "Hubungkan ke Roo Code Cloud",
-			"selectModel": "Pilih <code>roo/sonic</code> dari penyedia Roo Code Cloud di<br/><settingsLink>Pengaturan</settingsLink> untuk memulai"
+			"connectButton": "Hubungkan ke Alchemi Code Cloud",
+			"selectModel": "Pilih <code>roo/sonic</code> dari penyedia Alchemi Code Cloud di<br/><settingsLink>Pengaturan</settingsLink> untuk memulai"
 		},
-		"description": "Roo Code {{version}} menghadirkan fitur-fitur baru yang kuat dan peningkatan signifikan untuk meningkatkan alur kerja pengembangan Anda.",
+		"description": "Alchemi Code {{version}} menghadirkan fitur-fitur baru yang kuat dan peningkatan signifikan untuk meningkatkan alur kerja pengembangan Anda.",
 		"whatsNew": "Yang Baru",
 		"feature1": "<bold>Antrian Pesan</bold>: Antrikan beberapa pesan saat Roo sedang bekerja, memungkinkan Anda melanjutkan perencanaan alur kerja tanpa gangguan.",
 		"feature2": "<bold>Perintah Slash Kustom</bold>: Buat perintah slash yang dipersonalisasi untuk akses cepat ke prompt dan alur kerja yang sering digunakan, dengan manajemen UI lengkap.",
@@ -335,7 +335,7 @@
 	"profileViolationWarning": "Profil saat ini tidak kompatibel dengan pengaturan organisasi kamu",
 	"shellIntegration": {
 		"title": "Peringatan Eksekusi Perintah",
-		"description": "Perintah kamu dijalankan tanpa integrasi shell terminal VSCode. Untuk menekan peringatan ini kamu bisa menonaktifkan integrasi shell di bagian <strong>Terminal</strong> dari <settingsLink>pengaturan Roo Code</settingsLink> atau troubleshoot integrasi terminal VSCode menggunakan link di bawah.",
+		"description": "Perintah kamu dijalankan tanpa integrasi shell terminal VSCode. Untuk menekan peringatan ini kamu bisa menonaktifkan integrasi shell di bagian <strong>Terminal</strong> dari <settingsLink>pengaturan Alchemi Code</settingsLink> atau troubleshoot integrasi terminal VSCode menggunakan link di bawah.",
 		"troubleshooting": "Klik di sini untuk dokumentasi integrasi shell."
 	},
 	"ask": {
@@ -361,7 +361,7 @@
 		"ariaLabel": "Versi {{version}} - Klik untuk melihat catatan rilis"
 	},
 	"rooCloudCTA": {
-		"title": "Roo Code Cloud sedang berkembang!",
+		"title": "Alchemi Code Cloud sedang berkembang!",
 		"description": "Jalankan agen jarak jauh di cloud, akses tugas Anda dari mana saja, berkolaborasi dengan orang lain, dan banyak lagi.",
 		"joinWaitlist": "Daftar untuk mendapatkan pembaruan terbaru."
 	},

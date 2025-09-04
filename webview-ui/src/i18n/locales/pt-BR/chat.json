@@ -1,5 +1,5 @@
 {
-	"greeting": "Bem-vindo ao Roo Code",
+	"greeting": "Bem-vindo ao Alchemi Code",
 	"task": {
 		"title": "Tarefa",
 		"expand": "Expandir tarefa",
@@ -21,7 +21,7 @@
 		"sharePublicly": "Compartilhar publicamente",
 		"sharePubliclyDescription": "Qualquer pessoa com o link pode acessar",
 		"connectToCloud": "Conectar ao Cloud",
-		"connectToCloudDescription": "Entre no Roo Code Cloud para compartilhar tarefas",
+		"connectToCloudDescription": "Entre no Alchemi Code Cloud para compartilhar tarefas",
 		"sharingDisabledByOrganization": "Compartilhamento desabilitado pela organização",
 		"shareSuccessOrganization": "Link da organização copiado para a área de transferência",
 		"shareSuccessPublic": "Link público copiado para a área de transferência"
@@ -243,7 +243,7 @@
 	"autoApprove": {
 		"title": "Aprovação automática:",
 		"none": "Nenhuma",
-		"description": "A aprovação automática permite que o Roo Code execute ações sem pedir permissão. Ative apenas para ações nas quais você confia totalmente. Configuração mais detalhada disponível nas <settingsLink>Configurações</settingsLink>.",
+		"description": "A aprovação automática permite que o Alchemi Code execute ações sem pedir permissão. Ative apenas para ações nas quais você confia totalmente. Configuração mais detalhada disponível nas <settingsLink>Configurações</settingsLink>.",
 		"selectOptionsFirst": "Selecione pelo menos uma opção abaixo para ativar a aprovação automática",
 		"toggleAriaLabel": "Alternar aprovação automática",
 		"disabledAriaLabel": "Aprovação automática desativada - selecione as opções primeiro"
@@ -264,14 +264,14 @@
 		"countdownDisplay": "{{count}}s"
 	},
 	"announcement": {
-		"title": "🎉 Roo Code {{version}} Lançado",
+		"title": "🎉 Alchemi Code {{version}} Lançado",
 		"stealthModel": {
-			"feature": "<bold>Modelo stealth GRATUITO por tempo limitado</bold> - Um modelo de raciocínio ultrarrápido que se destaca em codificação agêntica com uma janela de contexto de 262k, disponível através do Roo Code Cloud.",
+			"feature": "<bold>Modelo stealth GRATUITO por tempo limitado</bold> - Um modelo de raciocínio ultrarrápido que se destaca em codificação agêntica com uma janela de contexto de 262k, disponível através do Alchemi Code Cloud.",
 			"note": "(Nota: prompts e completações são registrados pelo criador do modelo e usados para melhorá-lo)",
-			"connectButton": "Conectar ao Roo Code Cloud",
-			"selectModel": "Selecione <code>roo/sonic</code> do provedor Roo Code Cloud em<br/><settingsLink>Configurações</settingsLink> para começar"
+			"connectButton": "Conectar ao Alchemi Code Cloud",
+			"selectModel": "Selecione <code>roo/sonic</code> do provedor Alchemi Code Cloud em<br/><settingsLink>Configurações</settingsLink> para começar"
 		},
-		"description": "Roo Code {{version}} traz novos recursos poderosos e melhorias significativas para aprimorar seu fluxo de trabalho de desenvolvimento.",
+		"description": "Alchemi Code {{version}} traz novos recursos poderosos e melhorias significativas para aprimorar seu fluxo de trabalho de desenvolvimento.",
 		"whatsNew": "O que há de novo",
 		"feature1": "<bold>Fila de Mensagens</bold>: Coloque várias mensagens na fila enquanto o Roo está trabalhando, permitindo que você continue planejando seu fluxo de trabalho sem interrupção.",
 		"feature2": "<bold>Comandos de Barra Personalizados</bold>: Crie comandos de barra personalizados para acesso rápido a prompts e fluxos de trabalho usados frequentemente, com gerenciamento completo da interface do usuário.",
@@ -314,7 +314,7 @@
 	"profileViolationWarning": "O perfil atual não é compatível com as configurações da sua organização",
 	"shellIntegration": {
 		"title": "Aviso de execução de comando",
-		"description": "Seu comando está sendo executado sem a integração de shell do terminal VSCode. Para suprimir este aviso, você pode desativar a integração de shell na seção <strong>Terminal</strong> das <settingsLink>configurações do Roo Code</settingsLink> ou solucionar problemas de integração do terminal VSCode usando o link abaixo.",
+		"description": "Seu comando está sendo executado sem a integração de shell do terminal VSCode. Para suprimir este aviso, você pode desativar a integração de shell na seção <strong>Terminal</strong> das <settingsLink>configurações do Alchemi Code</settingsLink> ou solucionar problemas de integração do terminal VSCode usando o link abaixo.",
 		"troubleshooting": "Clique aqui para a documentação de integração de shell."
 	},
 	"ask": {
@@ -355,7 +355,7 @@
 		"ariaLabel": "Versão {{version}} - Clique para ver as notas de lançamento"
 	},
 	"rooCloudCTA": {
-		"title": "Roo Code Cloud está evoluindo!",
+		"title": "Alchemi Code Cloud está evoluindo!",
 		"description": "Execute agentes remotos na nuvem, acesse suas tarefas de qualquer lugar, colabore com outros e muito mais.",
 		"joinWaitlist": "Cadastre-se para receber as últimas atualizações."
 	},

@@ -4,7 +4,7 @@
 		"task_placeholder": "Escriu la teva tasca aquí"
 	},
 	"extension": {
-		"name": "Roo Code",
+		"name": "Alchemi Code",
 		"description": "Tot un equip de desenvolupadors d'IA al teu editor."
 	},
 	"number_format": {
@@ -105,7 +105,7 @@
 			"completionError": "Error de finalització de Cerebras: {{error}}"
 		},
 		"roo": {
-			"authenticationRequired": "El proveïdor Roo requereix autenticació al núvol. Si us plau, inicieu sessió a Roo Code Cloud."
+			"authenticationRequired": "El proveïdor Roo requereix autenticació al núvol. Si us plau, inicieu sessió a Alchemi Code Cloud."
 		},
 		"mode_import_failed": "Ha fallat la importació del mode: {{error}}"
 	},
@@ -188,8 +188,8 @@
 	},
 	"mdm": {
 		"errors": {
-			"cloud_auth_required": "La teva organització requereix autenticació de Roo Code Cloud. Si us plau, inicia sessió per continuar.",
-			"organization_mismatch": "Has d'estar autenticat amb el compte de Roo Code Cloud de la teva organització.",
+			"cloud_auth_required": "La teva organització requereix autenticació de Alchemi Code Cloud. Si us plau, inicia sessió per continuar.",
+			"organization_mismatch": "Has d'estar autenticat amb el compte de Alchemi Code Cloud de la teva organització.",
 			"verification_failed": "No s'ha pogut verificar l'autenticació de l'organització."
 		},
 		"info": {
