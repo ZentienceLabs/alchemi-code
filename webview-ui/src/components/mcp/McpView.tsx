@@ -156,7 +156,7 @@ const McpView = ({ onDone }: McpViewProps) => {
 								<span className="codicon codicon-refresh" style={{ marginRight: "6px" }}></span>
 								{t("mcp:refreshMCP")}
 							</Button>
-							<StandardTooltip content={t("mcp:marketplace")}>
+							{/* <StandardTooltip content={t("mcp:marketplace")}>
 								<Button
 									variant="secondary"
 									style={{ width: "100%" }}
@@ -173,7 +173,7 @@ const McpView = ({ onDone }: McpViewProps) => {
 									<span className="codicon codicon-extensions" style={{ marginRight: "6px" }}></span>
 									{t("mcp:marketplace")}
 								</Button>
-							</StandardTooltip>
+							</StandardTooltip> */}
 						</div>
 						<div
 							style={{

@@ -577,7 +577,7 @@ const ModesView = ({ onDone }: ModesViewProps) => {
 									</div>
 								)}
 							</div>
-							<StandardTooltip content={t("chat:modeSelector.marketplace")}>
+							{/* <StandardTooltip content={t("chat:modeSelector.marketplace")}>
 								<Button
 									variant="ghost"
 									size="icon"
@@ -593,7 +593,7 @@ const ModesView = ({ onDone }: ModesViewProps) => {
 									}}>
 									<span className="codicon codicon-extensions"></span>
 								</Button>
-							</StandardTooltip>
+							</StandardTooltip> */}
 						</div>
 					</div>
 

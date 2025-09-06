@@ -188,7 +188,7 @@ export interface WebviewMessage {
 		| "setHistoryPreviewCollapsed"
 		| "openExternal"
 		| "filterMarketplaceItems"
-		| "marketplaceButtonClicked"
+		// | "marketplaceButtonClicked"
 		| "installMarketplaceItem"
 		| "installMarketplaceItemWithParameters"
 		| "cancelMarketplaceInstall"

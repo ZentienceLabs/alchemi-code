@@ -74,17 +74,17 @@ export const registerCommands = (options: RegisterCommandOptions) => {
 
 const getCommandsMap = ({ context, outputChannel, provider }: RegisterCommandOptions): Record<CommandId, any> => ({
 	activationCompleted: () => {},
-	accountButtonClicked: () => {
-		const visibleProvider = getVisibleProviderOrLog(outputChannel)
+	// accountButtonClicked: () => {
+	// 	const visibleProvider = getVisibleProviderOrLog(outputChannel)
 
-		if (!visibleProvider) {
-			return
-		}
+	// 	if (!visibleProvider) {
+	// 		return
+	// 	}
 
-		TelemetryService.instance.captureTitleButtonClicked("account")
+	// 	TelemetryService.instance.captureTitleButtonClicked("account")
 
-		visibleProvider.postMessageToWebview({ type: "action", action: "accountButtonClicked" })
-	},
+	// 	visibleProvider.postMessageToWebview({ type: "action", action: "accountButtonClicked" })
+	// },
 	plusButtonClicked: async () => {
 		const visibleProvider = getVisibleProviderOrLog(outputChannel)
 
@@ -153,11 +153,11 @@ const getCommandsMap = ({ context, outputChannel, provider }: RegisterCommandOpt
 
 		visibleProvider.postMessageToWebview({ type: "action", action: "historyButtonClicked" })
 	},
-	marketplaceButtonClicked: () => {
-		const visibleProvider = getVisibleProviderOrLog(outputChannel)
-		if (!visibleProvider) return
-		visibleProvider.postMessageToWebview({ type: "action", action: "marketplaceButtonClicked" })
-	},
+	// marketplaceButtonClicked: () => {
+	// 	const visibleProvider = getVisibleProviderOrLog(outputChannel)
+	// 	if (!visibleProvider) return
+	// 	visibleProvider.postMessageToWebview({ type: "action", action: "marketplaceButtonClicked" })
+	// },
 	showHumanRelayDialog: (params: { requestId: string; promptText: string }) => {
 		const panel = getPanel()
 

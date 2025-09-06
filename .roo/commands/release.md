@@ -1,6 +1,7 @@
----
+s---
 description: "Create a new release of the Alchemi Code extension"
 argument-hint: patch | minor | major
+
 ---
 
 1. Identify the SHA corresponding to the most recent release using GitHub CLI: `gh release view --json tagName,targetCommitish,publishedAt`
@@ -11,7 +12,7 @@ argument-hint: patch | minor | major
 
 ```
 ---
-"roo-cline": patch|minor|major
+"alchemi-code": patch|minor|major
 ---
 [list of changes]
 ```

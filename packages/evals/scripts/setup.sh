@@ -328,8 +328,8 @@ code --install-extension redhat.java &>/dev/null || exit 1
 code --install-extension ms-python.python&>/dev/null || exit 1
 code --install-extension rust-lang.rust-analyzer &>/dev/null || exit 1
 
-if ! code --list-extensions 2>/dev/null | grep -q "RooVeterinaryInc.roo-cline"; then
-  code --install-extension RooVeterinaryInc.roo-cline &>/dev/null || exit 1
+if ! code --list-extensions 2>/dev/null | grep -q "AlchemiStudio.alchemi-code"; then
+  code --install-extension AlchemiStudio.alchemi-code &>/dev/null || exit 1
 fi
 
 echo "✅ Done"

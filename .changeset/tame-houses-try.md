@@ -5,7 +5,7 @@
 "@roo-code/evals": major
 "@roo-code/types": major
 "@roo-code/ipc": major
-"roo-cline": major
+"alchemi-code": major
 ---
 
 changed the roo to alchemi code
