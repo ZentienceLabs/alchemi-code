@@ -151,7 +151,7 @@ export const AccountView = ({ userInfo, isAuthenticated, cloudApiUrl, onDone }: 
 									maskRepeat: "no-repeat",
 									maskSize: "contain",
 								}}>
-								<img src={rooLogoUri} alt="Roo logo" className="w-12 h-12 opacity-0" />
+								<img src={rooLogoUri} alt="Alchemi logo" className="w-12 h-12 opacity-0" />
 							</div>
 						</div>
 					</div>

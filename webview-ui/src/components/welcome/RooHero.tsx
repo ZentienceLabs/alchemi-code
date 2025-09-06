@@ -19,7 +19,7 @@ const RooHero = () => {
 					maskSize: "contain",
 				}}
 				className="mx-auto">
-				<img src={imagesBaseUri + "/alchemi-code-logo.svg"} alt="Roo logo" className="h-8 opacity-0" />
+				<img src={imagesBaseUri + "/alchemi-code-logo.svg"} alt="Alchemi logo" className="h-8 opacity-0" />
 			</div>
 		</div>
 	)

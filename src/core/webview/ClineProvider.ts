@@ -1560,9 +1560,9 @@ export class ClineProvider
 
 		// Check MDM compliance and send user to account tab if not compliant
 		// Only redirect if there's an actual MDM policy requiring authentication
-		if (this.mdmService?.requiresCloudAuth() && !this.checkMdmCompliance()) {
-			await this.postMessageToWebview({ type: "action", action: "accountButtonClicked" })
-		}
+		// if (this.mdmService?.requiresCloudAuth() && !this.checkMdmCompliance()) {
+		// 	await this.postMessageToWebview({ type: "action", action: "accountButtonClicked" })
+		// }
 	}
 
 	/**

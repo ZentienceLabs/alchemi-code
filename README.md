@@ -53,7 +53,7 @@ Check out the [CHANGELOG](CHANGELOG.md) for detailed updates and fixes.
 
 Alchemi Code 3.25 brings powerful new features and significant improvements to enhance your development workflow!
 
-- **Message Queueing** - Queue multiple messages while Roo is working, allowing you to continue planning your workflow without interruption.
+- **Message Queueing** - Queue multiple messages while Alchemi is working, allowing you to continue planning your workflow without interruption.
 - **Custom Slash Commands** - Create personalized slash commands for quick access to frequently used prompts and workflows, with full UI management.
 - **Enhanced Gemini Tools** - New URL context and Google Search grounding capabilities provide Gemini models with real-time web information and enhanced research abilities.
 

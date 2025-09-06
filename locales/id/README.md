@@ -53,7 +53,7 @@ Lihat [CHANGELOG](../../CHANGELOG.md) untuk update dan perbaikan detail.
 
 Alchemi Code 3.25 menghadirkan fitur-fitur baru yang powerful dan peningkatan signifikan untuk meningkatkan workflow development kamu!
 
-- **Antrian pesan** - Antrikan beberapa pesan saat Roo bekerja, memungkinkan kamu terus merencanakan alur kerja tanpa gangguan.
+- **Antrian pesan** - Antrikan beberapa pesan saat Alchemi bekerja, memungkinkan kamu terus merencanakan alur kerja tanpa gangguan.
 - **Perintah slash kustom** - Buat perintah slash yang dipersonalisasi untuk akses cepat ke prompt dan alur kerja yang sering digunakan dengan manajemen UI lengkap.
 - **Alat Gemini lanjutan** - Fitur konteks URL dan dasar pencarian Google baru memberikan model Gemini informasi web real-time dan kemampuan penelitian lanjutan.
 

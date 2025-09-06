@@ -2015,11 +2015,11 @@ export const webviewMessageHandler = async (
 			await provider.postStateToWebview()
 			break
 		}
-		case "accountButtonClicked": {
-			// Navigate to the account tab.
-			provider.postMessageToWebview({ type: "action", action: "accountButtonClicked" })
-			break
-		}
+		// case "accountButtonClicked": {
+		// 	// Navigate to the account tab.
+		// 	provider.postMessageToWebview({ type: "action", action: "accountButtonClicked" })
+		// 	break
+		// }
 		case "rooCloudSignIn": {
 			try {
 				TelemetryService.instance.captureEvent(TelemetryEventName.AUTHENTICATION_INITIATED)

@@ -54,7 +54,7 @@ Sehen Sie sich das [CHANGELOG](../../CHANGELOG.md) für detaillierte Updates und
 
 Alchemi Code 3.25 bringt mächtige neue Funktionen und bedeutende Verbesserungen, um deinen Entwicklungsworkflow zu verbessern!
 
-- **Nachrichten-Warteschlange** - Stelle mehrere Nachrichten in die Warteschlange, während Roo arbeitet, damit du deinen Workflow ohne Unterbrechung weiter planen kannst.
+- **Nachrichten-Warteschlange** - Stelle mehrere Nachrichten in die Warteschlange, während Alchemi arbeitet, damit du deinen Workflow ohne Unterbrechung weiter planen kannst.
 - **Benutzerdefinierte Slash-Befehle** - Erstelle personalisierte Slash-Befehle für schnellen Zugriff auf häufig verwendete Prompts und Workflows mit vollständiger UI-Verwaltung.
 - **Erweiterte Gemini-Tools** - Neue URL-Kontext- und Google-Such-Grundlagen-Funktionen bieten Gemini-Modellen Echtzeit-Web-Informationen und erweiterte Recherche-Fähigkeiten.
 

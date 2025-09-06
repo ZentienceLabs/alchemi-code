@@ -291,7 +291,7 @@ export class OpenAiNativeHandler extends BaseProvider implements SingleCompletio
 			text: { verbosity: (verbosity || "medium") as VerbosityLevel },
 			temperature: this.options.modelTemperature ?? GPT5_DEFAULT_TEMPERATURE,
 			// Explicitly include the calculated max output tokens for GPT‑5.
-			// Use the per-request reserved output computed by Roo (params.maxTokens from getModelParams).
+			// Use the per-request reserved output computed by Alchemi (params.maxTokens from getModelParams).
 			...(model.maxTokens ? { max_output_tokens: model.maxTokens } : {}),
 			...(requestPreviousResponseId && { previous_response_id: requestPreviousResponseId }),
 		}

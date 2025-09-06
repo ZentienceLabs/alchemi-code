@@ -54,7 +54,7 @@ Consulta el [CHANGELOG](../../CHANGELOG.md) para ver actualizaciones detalladas 
 
 ¡Alchemi Code 3.25 trae nuevas funcionalidades poderosas y mejoras significativas para mejorar tu flujo de trabajo de desarrollo!
 
-- **Cola de mensajes** - Pon varios mensajes en cola mientras Roo trabaja, permitiéndote continuar planificando tu flujo de trabajo sin interrupciones.
+- **Cola de mensajes** - Pon varios mensajes en cola mientras Alchemi trabaja, permitiéndote continuar planificando tu flujo de trabajo sin interrupciones.
 - **Comandos slash personalizados** - Crea comandos slash personalizados para acceso rápido a prompts y flujos de trabajo utilizados frecuentemente con gestión completa de la interfaz de usuario.
 - **Herramientas Gemini avanzadas** - Nuevas funcionalidades de contexto de URL y fundamentos de búsqueda de Google proporcionan a los modelos Gemini información web en tiempo real y capacidades de búsqueda avanzadas.
 

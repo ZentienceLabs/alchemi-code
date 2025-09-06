@@ -54,7 +54,7 @@ Consulta il [CHANGELOG](../../CHANGELOG.md) per aggiornamenti dettagliati e corr
 
 Alchemi Code 3.25 porta nuove funzionalità potenti e miglioramenti significativi per migliorare il tuo flusso di lavoro di sviluppo!
 
-- **Coda di messaggi** - Metti in coda più messaggi mentre Roo lavora, permettendoti di continuare a pianificare il tuo flusso di lavoro senza interruzioni.
+- **Coda di messaggi** - Metti in coda più messaggi mentre Alchemi lavora, permettendoti di continuare a pianificare il tuo flusso di lavoro senza interruzioni.
 - **Comandi slash personalizzati** - Crea comandi slash personalizzati per accesso rapido a prompt e flussi di lavoro utilizzati frequentemente con gestione completa dell'interfaccia utente.
 - **Strumenti Gemini avanzati** - Nuove funzionalità di contesto URL e fondamenti di ricerca Google forniscono ai modelli Gemini informazioni web in tempo reale e capacità di ricerca avanzate.
 

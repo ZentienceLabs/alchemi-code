@@ -23,7 +23,7 @@ import {
 	DialogDescription,
 	DialogFooter,
 	ToggleSwitch,
-	StandardTooltip,
+	// StandardTooltip,
 } from "@src/components/ui"
 import { buildDocLink } from "@src/utils/docLinks"
 
