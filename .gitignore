@@ -49,3 +49,7 @@ logs
 
 .history/
 .github/
+
+.claude
+
+docs/
