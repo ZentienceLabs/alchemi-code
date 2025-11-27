@@ -1,29 +1,68 @@
-<div align="center">
-<sub>
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=RooVeterinaryInc.roo-cline"><img src="https://img.shields.io/badge/VS_Code_Marketplace-007ACC?style=flat&logo=visualstudiocode&logoColor=white" alt="VS Code Marketplace"></a>
+  <a href="https://x.com/roocode"><img src="https://img.shields.io/badge/roocode-000000?style=flat&logo=x&logoColor=white" alt="X"></a>
+  <a href="https://youtube.com/@roocodeyt?feature=shared"><img src="https://img.shields.io/badge/YouTube-FF0000?style=flat&logo=youtube&logoColor=white" alt="YouTube"></a>
+  <a href="https://discord.gg/roocode"><img src="https://img.shields.io/badge/Join%20Discord-5865F2?style=flat&logo=discord&logoColor=white" alt="Join Discord"></a>
+  <a href="https://www.reddit.com/r/RooCode/"><img src="https://img.shields.io/badge/Join%20r%2FRooCode-FF4500?style=flat&logo=reddit&logoColor=white" alt="Join r/RooCode"></a>
+</p>
+<p align="center">
+  <em>Get help fast → <a href="https://discord.gg/roocode">Join Discord</a> • Prefer async? → <a href="https://www.reddit.com/r/RooCode/">Join r/RooCode</a></em>
+</p>
 
-<b>English</b> • [Català](locales/ca/README.md) • [Deutsch](locales/de/README.md) • [Español](locales/es/README.md) • [Français](locales/fr/README.md) • [हिंदी](locales/hi/README.md) • [Bahasa Indonesia](locales/id/README.md) • [Italiano](locales/it/README.md) • [日本語](locales/ja/README.md)
+# Roo Code
 
-</sub>
-<sub>
+> Your AI-Powered Dev Team, Right in Your Editor
 
-[한국어](locales/ko/README.md) • [Nederlands](locales/nl/README.md) • [Polski](locales/pl/README.md) • [Português (BR)](locales/pt-BR/README.md) • [Русский](locales/ru/README.md) • [Türkçe](locales/tr/README.md) • [Tiếng Việt](locales/vi/README.md) • [简体中文](locales/zh-CN/README.md) • [繁體中文](locales/zh-TW/README.md)
+<details>
+  <summary>🌐 Available languages</summary>
 
-</sub>
-</div>
-<br>
-<div align="center">
-  <h1>Alchemi Code</h1>
-  <p align="center">
-  <img src="https://media.githubusercontent.com/media/RooCodeInc/Roo-Code/main/src/assets/docs/demo.gif" width="100%" />
-  </p>
-  <p>Connect with developers, contribute ideas, and stay ahead with the latest AI-powered coding tools.</p>
-  
-  <a href="https://discord.gg/roocode" target="_blank"><img src="https://img.shields.io/badge/Join%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Join Discord"></a>
-  <a href="https://www.reddit.com/r/RooCode/" target="_blank"><img src="https://img.shields.io/badge/Join%20Reddit-FF4500?style=for-the-badge&logo=reddit&logoColor=white" alt="Join Reddit"></a>
-  
-</div>
-<br>
-<br>
+- [English](README.md)
+- [Català](locales/ca/README.md)
+- [Deutsch](locales/de/README.md)
+- [Español](locales/es/README.md)
+- [Français](locales/fr/README.md)
+- [हिंदी](locales/hi/README.md)
+- [Bahasa Indonesia](locales/id/README.md)
+- [Italiano](locales/it/README.md)
+- [日本語](locales/ja/README.md)
+- [한국어](locales/ko/README.md)
+- [Nederlands](locales/nl/README.md)
+- [Polski](locales/pl/README.md)
+- [Português (BR)](locales/pt-BR/README.md)
+- [Русский](locales/ru/README.md)
+- [Türkçe](locales/tr/README.md)
+- [Tiếng Việt](locales/vi/README.md)
+- [简体中文](locales/zh-CN/README.md)
+- [繁體中文](locales/zh-TW/README.md)
+- ...
+      </details>
+
+---
+
+## What Can Roo Code Do For YOU?
+
+- Generate Code from natural language descriptions and specs
+- Adapt with Modes: Code, Architect, Ask, Debug, and Custom Modes
+- Refactor & Debug existing code
+- Write & Update documentation
+- Answer Questions about your codebase
+- Automate repetitive tasks
+- Utilize MCP Servers
+
+## Modes
+
+Roo Code adapts to how you work:
+
+- Code Mode: everyday coding, edits, and file ops
+- Architect Mode: plan systems, specs, and migrations
+- Ask Mode: fast answers, explanations, and docs
+- Debug Mode: trace issues, add logs, isolate root causes
+- Custom Modes: build specialized modes for your team or workflow
+- Roomote Control: Roomote Control lets you remotely control tasks running in your local VS Code instance.
+
+Learn more: [Using Modes](https://docs.roocode.com/basic-usage/using-modes) • [Custom Modes](https://docs.roocode.com/advanced-usage/custom-modes) • [Roomote Control](https://docs.roocode.com/roo-code-cloud/roomote-control)
+
+## Tutorial & Feature Videos
 
 <div align="center">
 
@@ -108,17 +147,12 @@ Make Alchemi Code work your way with:
 
 ## Resources
 
-### Documentation
-
-- [Basic Usage Guide](https://docs.roocode.com/basic-usage/the-chat-interface)
-- [Advanced Features](https://docs.roocode.com/advanced-usage/auto-approving-actions)
-- [Frequently Asked Questions](https://docs.roocode.com/faq)
-
-### Community
-
-- **Discord:** [Join our Discord server](https://discord.gg/roocode) for real-time help and discussions
-- **Reddit:** [Visit our subreddit](https://www.reddit.com/r/RooCode) to share experiences and tips
-- **GitHub:** Report [issues](https://github.com/RooCodeInc/Roo-Code/issues) or request [features](https://github.com/RooCodeInc/Roo-Code/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop)
+- **[Documentation](https://docs.roocode.com):** The official guide to installing, configuring, and mastering Roo Code.
+- **[YouTube Channel](https://youtube.com/@roocodeyt?feature=shared):** Watch tutorials and see features in action.
+- **[Discord Server](https://discord.gg/roocode):** Join the community for real-time help and discussion.
+- **[Reddit Community](https://www.reddit.com/r/RooCode):** Share your experiences and see what others are building.
+- **[GitHub Issues](https://github.com/RooCodeInc/Roo-Code/issues):** Report bugs and track development.
+- **[Feature Requests](https://github.com/RooCodeInc/Roo-Code/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop):** Have an idea? Share it with the developers.
 
 ---
 

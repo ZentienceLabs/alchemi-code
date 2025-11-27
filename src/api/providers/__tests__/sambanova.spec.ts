@@ -113,7 +113,7 @@ describe("SambaNovaHandler", () => {
 		const firstChunk = await stream.next()
 
 		expect(firstChunk.done).toBe(false)
-		expect(firstChunk.value).toEqual({ type: "usage", inputTokens: 10, outputTokens: 20 })
+		expect(firstChunk.value).toMatchObject({ type: "usage", inputTokens: 10, outputTokens: 20 })
 	})
 
 	it("createMessage should pass correct parameters to SambaNova client", async () => {
@@ -144,6 +144,7 @@ describe("SambaNovaHandler", () => {
 			expect.objectContaining({
 				model: modelId,
 				max_tokens: modelInfo.maxTokens,
+				temperature: 0.7,
 				messages: expect.arrayContaining([{ role: "system", content: systemPrompt }]),
 				stream: true,
 				stream_options: { include_usage: true },

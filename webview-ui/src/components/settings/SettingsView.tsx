@@ -23,13 +23,20 @@ import {
 	Info,
 	MessageSquare,
 	LucideIcon,
+	SquareSlash,
+	Glasses,
 } from "lucide-react"
 
-import type { ProviderSettings, ExperimentId } from "@roo-code/types"
-
-import { TelemetrySetting } from "@roo/TelemetrySetting"
+import {
+	type ProviderSettings,
+	type ExperimentId,
+	type TelemetrySetting,
+	DEFAULT_CHECKPOINT_TIMEOUT_SECONDS,
+	ImageGenerationProvider,
+} from "@roo-code/types"
 
 import { vscode } from "@src/utils/vscode"
+import { cn } from "@src/lib/utils"
 import { useAppTranslation } from "@src/i18n/TranslationContext"
 import { ExtensionStateContextType, useExtensionState } from "@src/context/ExtensionStateContext"
 import {
@@ -65,7 +72,8 @@ import { LanguageSettings } from "./LanguageSettings"
 import { About } from "./About"
 import { Section } from "./Section"
 import PromptsSettings from "./PromptsSettings"
-import { cn } from "@/lib/utils"
+import { SlashCommandsSettings } from "./SlashCommandsSettings"
+import { UISettings } from "./UISettings"
 
 export const settingsTabsContainer = "flex flex-1 overflow-hidden [&.narrow_.tab-label]:hidden"
 export const settingsTabList =
@@ -81,12 +89,14 @@ export interface SettingsViewRef {
 const sectionNames = [
 	"providers",
 	"autoApprove",
+	"slashCommands",
 	"browser",
 	"checkpoints",
 	"notifications",
 	"contextManagement",
 	"terminal",
 	"prompts",
+	"ui",
 	"experimental",
 	"language",
 	"about",
@@ -114,10 +124,15 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 			: "providers",
 	)
 
+	const scrollPositions = useRef<Record<SectionName, number>>(
+		Object.fromEntries(sectionNames.map((s) => [s, 0])) as Record<SectionName, number>,
+	)
+	const contentRef = useRef<HTMLDivElement | null>(null)
+
 	const prevApiConfigName = useRef(currentApiConfigName)
 	const confirmDialogHandler = useRef<() => void>()
 
-	const [cachedState, setCachedState] = useState(extensionState)
+	const [cachedState, setCachedState] = useState(() => extensionState)
 
 	const {
 		alwaysAllowReadOnly,
@@ -141,6 +156,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 		browserToolEnabled,
 		browserViewportSize,
 		enableCheckpoints,
+		checkpointTimeout,
 		diffEnabled,
 		experiments,
 		fuzzyMatchThreshold,
@@ -183,6 +199,13 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 		includeDiagnosticMessages,
 		maxDiagnosticMessages,
 		includeTaskHistoryInEnhance,
+		imageGenerationProvider,
+		openRouterImageApiKey,
+		openRouterImageGenerationSelectedModel,
+		reasoningBlockCollapsed,
+		includeCurrentTime,
+		includeCurrentCost,
+		maxGitStatusFiles,
 	} = cachedState
 
 	const apiConfiguration = useMemo(() => cachedState.apiConfiguration ?? {}, [cachedState.apiConfiguration])
@@ -197,7 +220,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 		setCachedState((prevCachedState) => ({ ...prevCachedState, ...extensionState }))
 		prevApiConfigName.current = currentApiConfigName
 		setChangeDetected(false)
-	}, [currentApiConfigName, extensionState, isChangeDetected])
+	}, [currentApiConfigName, extensionState])
 
 	// Bust the cache when settings are imported.
 	useEffect(() => {
@@ -229,7 +252,13 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 
 				// Only skip change detection for automatic initialization (not user actions)
 				// This prevents the dirty state when the component initializes and auto-syncs values
-				const isInitialSync = !isUserAction && previousValue === undefined && value !== undefined
+				// Treat undefined, null, and empty string as uninitialized states
+				const isInitialSync =
+					!isUserAction &&
+					(previousValue === undefined || previousValue === "" || previousValue === null) &&
+					value !== undefined &&
+					value !== "" &&
+					value !== null
 
 				if (!isInitialSync) {
 					setChangeDetected(true)
@@ -262,9 +291,42 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 		})
 	}, [])
 
+	const setImageGenerationProvider = useCallback((provider: ImageGenerationProvider) => {
+		setCachedState((prevState) => {
+			if (prevState.imageGenerationProvider !== provider) {
+				setChangeDetected(true)
+			}
+
+			return { ...prevState, imageGenerationProvider: provider }
+		})
+	}, [])
+
+	const setOpenRouterImageApiKey = useCallback((apiKey: string) => {
+		setCachedState((prevState) => {
+			if (prevState.openRouterImageApiKey !== apiKey) {
+				setChangeDetected(true)
+			}
+
+			return { ...prevState, openRouterImageApiKey: apiKey }
+		})
+	}, [])
+
+	const setImageGenerationSelectedModel = useCallback((model: string) => {
+		setCachedState((prevState) => {
+			if (prevState.openRouterImageGenerationSelectedModel !== model) {
+				setChangeDetected(true)
+			}
+
+			return { ...prevState, openRouterImageGenerationSelectedModel: model }
+		})
+	}, [])
+
 	const setCustomSupportPromptsField = useCallback((prompts: Record<string, string | undefined>) => {
 		setCachedState((prevState) => {
-			if (JSON.stringify(prevState.customSupportPrompts) === JSON.stringify(prompts)) {
+			const previousStr = JSON.stringify(prevState.customSupportPrompts)
+			const newStr = JSON.stringify(prompts)
+
+			if (previousStr === newStr) {
 				return prevState
 			}
 
@@ -277,74 +339,91 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 
 	const handleSubmit = () => {
 		if (isSettingValid) {
-			vscode.postMessage({ type: "language", text: language })
-			vscode.postMessage({ type: "alwaysAllowReadOnly", bool: alwaysAllowReadOnly })
 			vscode.postMessage({
-				type: "alwaysAllowReadOnlyOutsideWorkspace",
-				bool: alwaysAllowReadOnlyOutsideWorkspace,
+				type: "updateSettings",
+				updatedSettings: {
+					language,
+					alwaysAllowReadOnly: alwaysAllowReadOnly ?? undefined,
+					alwaysAllowReadOnlyOutsideWorkspace: alwaysAllowReadOnlyOutsideWorkspace ?? undefined,
+					alwaysAllowWrite: alwaysAllowWrite ?? undefined,
+					alwaysAllowWriteOutsideWorkspace: alwaysAllowWriteOutsideWorkspace ?? undefined,
+					alwaysAllowWriteProtected: alwaysAllowWriteProtected ?? undefined,
+					alwaysAllowExecute: alwaysAllowExecute ?? undefined,
+					alwaysAllowBrowser: alwaysAllowBrowser ?? undefined,
+					alwaysAllowMcp,
+					alwaysAllowModeSwitch,
+					allowedCommands: allowedCommands ?? [],
+					deniedCommands: deniedCommands ?? [],
+					// Note that we use `null` instead of `undefined` since `JSON.stringify`
+					// will omit `undefined` when serializing the object and passing it to the
+					// extension host. We may need to do the same for other nullable fields.
+					allowedMaxRequests: allowedMaxRequests ?? null,
+					allowedMaxCost: allowedMaxCost ?? null,
+					autoCondenseContext,
+					autoCondenseContextPercent,
+					browserToolEnabled: browserToolEnabled ?? true,
+					soundEnabled: soundEnabled ?? true,
+					soundVolume: soundVolume ?? 0.5,
+					ttsEnabled,
+					ttsSpeed,
+					diffEnabled: diffEnabled ?? true,
+					enableCheckpoints: enableCheckpoints ?? false,
+					checkpointTimeout: checkpointTimeout ?? DEFAULT_CHECKPOINT_TIMEOUT_SECONDS,
+					browserViewportSize: browserViewportSize ?? "900x600",
+					remoteBrowserHost: remoteBrowserEnabled ? remoteBrowserHost : undefined,
+					remoteBrowserEnabled: remoteBrowserEnabled ?? false,
+					fuzzyMatchThreshold: fuzzyMatchThreshold ?? 1.0,
+					writeDelayMs,
+					screenshotQuality: screenshotQuality ?? 75,
+					terminalOutputLineLimit: terminalOutputLineLimit ?? 500,
+					terminalOutputCharacterLimit: terminalOutputCharacterLimit ?? 50_000,
+					terminalShellIntegrationTimeout: terminalShellIntegrationTimeout ?? 30_000,
+					terminalShellIntegrationDisabled,
+					terminalCommandDelay,
+					terminalPowershellCounter,
+					terminalZshClearEolMark,
+					terminalZshOhMy,
+					terminalZshP10k,
+					terminalZdotdir,
+					terminalCompressProgressBar,
+					mcpEnabled,
+					alwaysApproveResubmit: alwaysApproveResubmit ?? false,
+					requestDelaySeconds: requestDelaySeconds ?? 5,
+					maxOpenTabsContext: Math.min(Math.max(0, maxOpenTabsContext ?? 20), 500),
+					maxWorkspaceFiles: Math.min(Math.max(0, maxWorkspaceFiles ?? 200), 500),
+					showRooIgnoredFiles: showRooIgnoredFiles ?? true,
+					maxReadFileLine: maxReadFileLine ?? -1,
+					maxImageFileSize: maxImageFileSize ?? 5,
+					maxTotalImageSize: maxTotalImageSize ?? 20,
+					maxConcurrentFileReads: cachedState.maxConcurrentFileReads ?? 5,
+					includeDiagnosticMessages:
+						includeDiagnosticMessages !== undefined ? includeDiagnosticMessages : true,
+					maxDiagnosticMessages: maxDiagnosticMessages ?? 50,
+					alwaysAllowSubtasks,
+					alwaysAllowUpdateTodoList,
+					alwaysAllowFollowupQuestions: alwaysAllowFollowupQuestions ?? false,
+					followupAutoApproveTimeoutMs,
+					condensingApiConfigId: condensingApiConfigId || "",
+					includeTaskHistoryInEnhance: includeTaskHistoryInEnhance ?? true,
+					reasoningBlockCollapsed: reasoningBlockCollapsed ?? true,
+					includeCurrentTime: includeCurrentTime ?? true,
+					includeCurrentCost: includeCurrentCost ?? true,
+					maxGitStatusFiles: maxGitStatusFiles ?? 0,
+					profileThresholds,
+					imageGenerationProvider,
+					openRouterImageApiKey,
+					openRouterImageGenerationSelectedModel,
+					experiments,
+					customSupportPrompts,
+				},
 			})
-			vscode.postMessage({ type: "alwaysAllowWrite", bool: alwaysAllowWrite })
-			vscode.postMessage({ type: "alwaysAllowWriteOutsideWorkspace", bool: alwaysAllowWriteOutsideWorkspace })
-			vscode.postMessage({ type: "alwaysAllowWriteProtected", bool: alwaysAllowWriteProtected })
-			vscode.postMessage({ type: "alwaysAllowExecute", bool: alwaysAllowExecute })
-			vscode.postMessage({ type: "alwaysAllowBrowser", bool: alwaysAllowBrowser })
-			vscode.postMessage({ type: "alwaysAllowMcp", bool: alwaysAllowMcp })
-			vscode.postMessage({ type: "allowedCommands", commands: allowedCommands ?? [] })
-			vscode.postMessage({ type: "deniedCommands", commands: deniedCommands ?? [] })
-			vscode.postMessage({ type: "allowedMaxRequests", value: allowedMaxRequests ?? undefined })
-			vscode.postMessage({ type: "allowedMaxCost", value: allowedMaxCost ?? undefined })
-			vscode.postMessage({ type: "autoCondenseContext", bool: autoCondenseContext })
-			vscode.postMessage({ type: "autoCondenseContextPercent", value: autoCondenseContextPercent })
-			vscode.postMessage({ type: "browserToolEnabled", bool: browserToolEnabled })
-			vscode.postMessage({ type: "soundEnabled", bool: soundEnabled })
-			vscode.postMessage({ type: "ttsEnabled", bool: ttsEnabled })
-			vscode.postMessage({ type: "ttsSpeed", value: ttsSpeed })
-			vscode.postMessage({ type: "soundVolume", value: soundVolume })
-			vscode.postMessage({ type: "diffEnabled", bool: diffEnabled })
-			vscode.postMessage({ type: "enableCheckpoints", bool: enableCheckpoints })
-			vscode.postMessage({ type: "browserViewportSize", text: browserViewportSize })
-			vscode.postMessage({ type: "remoteBrowserHost", text: remoteBrowserHost })
-			vscode.postMessage({ type: "remoteBrowserEnabled", bool: remoteBrowserEnabled })
-			vscode.postMessage({ type: "fuzzyMatchThreshold", value: fuzzyMatchThreshold ?? 1.0 })
-			vscode.postMessage({ type: "writeDelayMs", value: writeDelayMs })
-			vscode.postMessage({ type: "screenshotQuality", value: screenshotQuality ?? 75 })
-			vscode.postMessage({ type: "terminalOutputLineLimit", value: terminalOutputLineLimit ?? 500 })
-			vscode.postMessage({ type: "terminalOutputCharacterLimit", value: terminalOutputCharacterLimit ?? 50000 })
-			vscode.postMessage({ type: "terminalShellIntegrationTimeout", value: terminalShellIntegrationTimeout })
-			vscode.postMessage({ type: "terminalShellIntegrationDisabled", bool: terminalShellIntegrationDisabled })
-			vscode.postMessage({ type: "terminalCommandDelay", value: terminalCommandDelay })
-			vscode.postMessage({ type: "terminalPowershellCounter", bool: terminalPowershellCounter })
-			vscode.postMessage({ type: "terminalZshClearEolMark", bool: terminalZshClearEolMark })
-			vscode.postMessage({ type: "terminalZshOhMy", bool: terminalZshOhMy })
-			vscode.postMessage({ type: "terminalZshP10k", bool: terminalZshP10k })
-			vscode.postMessage({ type: "terminalZdotdir", bool: terminalZdotdir })
-			vscode.postMessage({ type: "terminalCompressProgressBar", bool: terminalCompressProgressBar })
-			vscode.postMessage({ type: "mcpEnabled", bool: mcpEnabled })
-			vscode.postMessage({ type: "alwaysApproveResubmit", bool: alwaysApproveResubmit })
-			vscode.postMessage({ type: "requestDelaySeconds", value: requestDelaySeconds })
-			vscode.postMessage({ type: "maxOpenTabsContext", value: maxOpenTabsContext })
-			vscode.postMessage({ type: "maxWorkspaceFiles", value: maxWorkspaceFiles ?? 200 })
-			vscode.postMessage({ type: "showRooIgnoredFiles", bool: showRooIgnoredFiles })
-			vscode.postMessage({ type: "maxReadFileLine", value: maxReadFileLine ?? -1 })
-			vscode.postMessage({ type: "maxImageFileSize", value: maxImageFileSize ?? 5 })
-			vscode.postMessage({ type: "maxTotalImageSize", value: maxTotalImageSize ?? 20 })
-			vscode.postMessage({ type: "maxConcurrentFileReads", value: cachedState.maxConcurrentFileReads ?? 5 })
-			vscode.postMessage({ type: "includeDiagnosticMessages", bool: includeDiagnosticMessages })
-			vscode.postMessage({ type: "maxDiagnosticMessages", value: maxDiagnosticMessages ?? 50 })
-			vscode.postMessage({ type: "currentApiConfigName", text: currentApiConfigName })
-			vscode.postMessage({ type: "updateExperimental", values: experiments })
-			vscode.postMessage({ type: "alwaysAllowModeSwitch", bool: alwaysAllowModeSwitch })
-			vscode.postMessage({ type: "alwaysAllowSubtasks", bool: alwaysAllowSubtasks })
-			vscode.postMessage({ type: "alwaysAllowFollowupQuestions", bool: alwaysAllowFollowupQuestions })
-			vscode.postMessage({ type: "alwaysAllowUpdateTodoList", bool: alwaysAllowUpdateTodoList })
-			vscode.postMessage({ type: "followupAutoApproveTimeoutMs", value: followupAutoApproveTimeoutMs })
-			vscode.postMessage({ type: "condensingApiConfigId", text: condensingApiConfigId || "" })
+
+			// These have more complex logic so they aren't (yet) handled
+			// by the `updateSettings` message.
 			vscode.postMessage({ type: "updateCondensingPrompt", text: customCondensingPrompt || "" })
-			vscode.postMessage({ type: "updateSupportPrompt", values: customSupportPrompts || {} })
-			vscode.postMessage({ type: "includeTaskHistoryInEnhance", bool: includeTaskHistoryInEnhance ?? true })
 			vscode.postMessage({ type: "upsertApiConfiguration", text: currentApiConfigName, apiConfiguration })
 			vscode.postMessage({ type: "telemetrySetting", text: telemetrySetting })
-			vscode.postMessage({ type: "profileThresholds", values: profileThresholds })
+
 			setChangeDetected(false)
 		}
 	}
@@ -379,11 +458,19 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 	// Handle tab changes with unsaved changes check
 	const handleTabChange = useCallback(
 		(newTab: SectionName) => {
-			// Directly switch tab without checking for unsaved changes
+			if (contentRef.current) {
+				scrollPositions.current[activeTab] = contentRef.current.scrollTop
+			}
 			setActiveTab(newTab)
 		},
-		[], // No dependency on isChangeDetected needed anymore
+		[activeTab],
 	)
+
+	useLayoutEffect(() => {
+		if (contentRef.current) {
+			contentRef.current.scrollTop = scrollPositions.current[activeTab] ?? 0
+		}
+	}, [activeTab])
 
 	// Store direct DOM element refs for each tab
 	const tabRefs = useRef<Record<SectionName, HTMLButtonElement | null>>(
@@ -416,12 +503,14 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 		() => [
 			{ id: "providers", icon: Webhook },
 			{ id: "autoApprove", icon: CheckCheck },
+			{ id: "slashCommands", icon: SquareSlash },
 			{ id: "browser", icon: SquareMousePointer },
 			{ id: "checkpoints", icon: GitBranch },
 			{ id: "notifications", icon: Bell },
 			{ id: "contextManagement", icon: Database },
 			{ id: "terminal", icon: SquareTerminal },
 			{ id: "prompts", icon: MessageSquare },
+			{ id: "ui", icon: Glasses },
 			{ id: "experimental", icon: FlaskConical },
 			{ id: "language", icon: Globe },
 			{ id: "about", icon: Info },
@@ -485,7 +574,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 									: t("settings:header.nothingChangedTooltip")
 						}>
 						<Button
-							variant={isSettingValid ? "default" : "secondary"}
+							variant={isSettingValid ? "primary" : "secondary"}
 							className={!isSettingValid ? "!border-vscode-errorForeground" : ""}
 							onClick={handleSubmit}
 							disabled={!isChangeDetected || !isSettingValid}
@@ -560,7 +649,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 				</TabList>
 
 				{/* Content area */}
-				<TabContent className="p-0 flex-1 overflow-auto">
+				<TabContent ref={contentRef} className="p-0 flex-1 overflow-auto">
 					{/* Providers Section */}
 					{activeTab === "providers" && (
 						<div>
@@ -636,6 +725,9 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 						/>
 					)}
 
+					{/* Slash Commands Section */}
+					{activeTab === "slashCommands" && <SlashCommandsSettings />}
+
 					{/* Browser Section */}
 					{activeTab === "browser" && (
 						<BrowserSettings
@@ -652,6 +744,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 					{activeTab === "checkpoints" && (
 						<CheckpointSettings
 							enableCheckpoints={enableCheckpoints}
+							checkpointTimeout={checkpointTimeout}
 							setCachedStateField={setCachedStateField}
 						/>
 					)}
@@ -684,6 +777,9 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 							includeDiagnosticMessages={includeDiagnosticMessages}
 							maxDiagnosticMessages={maxDiagnosticMessages}
 							writeDelayMs={writeDelayMs}
+							includeCurrentTime={includeCurrentTime}
+							includeCurrentCost={includeCurrentCost}
+							maxGitStatusFiles={maxGitStatusFiles}
 							setCachedStateField={setCachedStateField}
 						/>
 					)}
@@ -718,9 +814,30 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 						/>
 					)}
 
+					{/* UI Section */}
+					{activeTab === "ui" && (
+						<UISettings
+							reasoningBlockCollapsed={reasoningBlockCollapsed ?? true}
+							setCachedStateField={setCachedStateField}
+						/>
+					)}
+
 					{/* Experimental Section */}
 					{activeTab === "experimental" && (
-						<ExperimentalSettings setExperimentEnabled={setExperimentEnabled} experiments={experiments} />
+						<ExperimentalSettings
+							setExperimentEnabled={setExperimentEnabled}
+							experiments={experiments}
+							apiConfiguration={apiConfiguration}
+							setApiConfigurationField={setApiConfigurationField}
+							imageGenerationProvider={imageGenerationProvider}
+							openRouterImageApiKey={openRouterImageApiKey as string | undefined}
+							openRouterImageGenerationSelectedModel={
+								openRouterImageGenerationSelectedModel as string | undefined
+							}
+							setImageGenerationProvider={setImageGenerationProvider}
+							setOpenRouterImageApiKey={setOpenRouterImageApiKey}
+							setImageGenerationSelectedModel={setImageGenerationSelectedModel}
+						/>
 					)}
 
 					{/* Language Section */}

@@ -1,16 +1,69 @@
-<div align="center">
-<sub>
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=RooVeterinaryInc.roo-cline"><img src="https://img.shields.io/badge/VS_Code_Marketplace-007ACC?style=flat&logo=visualstudiocode&logoColor=white" alt="VS Code Marketplace"></a>
+  <a href="https://x.com/roocode"><img src="https://img.shields.io/badge/roocode-000000?style=flat&logo=x&logoColor=white" alt="X"></a>
+  <a href="https://youtube.com/@roocodeyt?feature=shared"><img src="https://img.shields.io/badge/YouTube-FF0000?style=flat&logo=youtube&logoColor=white" alt="YouTube"></a>
+  <a href="https://discord.gg/roocode"><img src="https://img.shields.io/badge/Join%20Discord-5865F2?style=flat&logo=discord&logoColor=white" alt="Join Discord"></a>
+  <a href="https://www.reddit.com/r/RooCode/"><img src="https://img.shields.io/badge/Join%20r%2FRooCode-FF4500?style=flat&logo=reddit&logoColor=white" alt="Join r/RooCode"></a>
+</p>
+<p align="center">
+  <em>Hızlı yardım alın → <a href="https://discord.gg/roocode">Discord'a Katılın</a> • Asenkron mu tercih edersiniz? → <a href="https://www.reddit.com/r/RooCode/">r/RooCode'a Katılın</a></em>
+</p>
 
-[English](../../README.md) • [Català](../ca/README.md) • [Deutsch](../de/README.md) • [Español](../es/README.md) • [Français](../fr/README.md) • [हिन्दी](../hi/README.md) • [Bahasa Indonesia](../id/README.md) • [Italiano](../it/README.md) • [日本語](../ja/README.md)
+# Roo Code
 
-</sub>
-<sub>
+> AI destekli dev ekibin, doğrudan editörünün içinde
 
-[한국어](../ko/README.md) • [Nederlands](../nl/README.md) • [Polski](../pl/README.md) • [Português (BR)](../pt-BR/README.md) • [Русский](../ru/README.md) • <b>Türkçe</b> • [Tiếng Việt](../vi/README.md) • [简体中文](../zh-CN/README.md) • [繁體中文](../zh-TW/README.md)
+<details>
+  <summary>🌐 Mevcut diller</summary>
 
-</sub>
-</div>
-<br>
+- [English](../../README.md)
+- [Català](../ca/README.md)
+- [Deutsch](../de/README.md)
+- [Español](../es/README.md)
+- [Français](../fr/README.md)
+- [हिंदी](../hi/README.md)
+- [Bahasa Indonesia](../id/README.md)
+- [Italiano](../it/README.md)
+- [日本語](../ja/README.md)
+- [한국어](../ko/README.md)
+- [Nederlands](../nl/README.md)
+- [Polski](../pl/README.md)
+- [Português (BR)](../pt-BR/README.md)
+- [Русский](../ru/README.md)
+- [Türkçe](../tr/README.md)
+- [Tiếng Việt](../vi/README.md)
+- [简体中文](../zh-CN/README.md)
+- [繁體中文](../zh-TW/README.md)
+- ...
+  </details>
+
+---
+
+## Roo Code SİZİN İçin Ne Yapabilir?
+
+- Doğal dil açıklamalarından kod üretin
+- Modlarla Uyum Sağlayın: Kod, Mimar, Sor, Hata Ayıkla ve Özel Modlar
+- Mevcut kodu yeniden düzenleyin ve hatalarını ayıklayın
+- Dokümantasyon yazın ve güncelleyin
+- Kod tabanınızla ilgili soruları yanıtlayın
+- Tekrarlayan görevleri otomatikleştirin
+- MCP Sunucularını kullanın
+
+## Modlar
+
+Roo Code, sizin çalışma şeklinize uyum sağlar, tam tersi değil:
+
+- Kod Modu: günlük kodlama, düzenlemeler ve dosya işlemleri
+- Mimar Modu: sistemleri, özellikleri ve geçişleri planlayın
+- Sor Modu: hızlı cevaplar, açıklamalar ve belgeler
+- Hata Ayıklama Modu: sorunları izleyin, günlükler ekleyin, kök nedenleri izole edin
+- Özel Modlar: ekibiniz veya iş akışınız için özel modlar oluşturun
+- Roomote Control: Roomote Control, yerel VS Code örneğinde çalışan işleri uzaktan kontrol etmeni sağlar.
+
+Daha fazla: [Modları kullanma](https://docs.roocode.com/basic-usage/using-modes) • [Özel modlar](https://docs.roocode.com/advanced-usage/custom-modes) • [Roomote Control](https://docs.roocode.com/roo-code-cloud/roomote-control)
+
+## Eğitim ve Özellik Videoları
+
 <div align="center">
   <h2>Alchemi Code Topluluğuna Katılın</h2>
   <p>Geliştiricilerle bağlantı kurun, fikirlerinizi paylaşın ve en son yapay zeka destekli kodlama araçlarıyla güncel kalın.</p>
@@ -109,23 +162,18 @@ Alchemi Code'u kendi tarzınıza göre çalıştırın:
 
 ## Kaynaklar
 
-### Dokümantasyon
-
-- [Temel Kullanım Kılavuzu](https://docs.roocode.com/basic-usage/the-chat-interface)
-- [Gelişmiş Özellikler](https://docs.roocode.com/advanced-usage/auto-approving-actions)
-- [Sık Sorulan Sorular](https://docs.roocode.com/faq)
-
-### Topluluk
-
-- **Discord:** Gerçek zamanlı yardım ve tartışmalar için [Discord sunucumuza katılın](https://discord.gg/roocode)
-- **Reddit:** Deneyimlerinizi ve ipuçlarınızı paylaşmak için [subreddit'imizi ziyaret edin](https://www.reddit.com/r/RooCode)
-- **GitHub:** [Sorunları bildirin](https://github.com/RooCodeInc/Roo-Code/issues) veya [özellik talep edin](https://github.com/RooCodeInc/Roo-Code/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop)
+- **[Dokümantasyon](https://docs.roocode.com):** Roo Code'u yükleme, yapılandırma ve ustalaşma konusundaki resmi kılavuz.
+- **[YouTube Kanalı](https://youtube.com/@roocodeyt?feature=shared):** Eğitimleri izleyin ve özellikleri çalışırken görün.
+- **[Discord Sunucusu](https://discord.gg/roocode):** Gerçek zamanlı yardım ve tartışma için topluluğa katılın.
+- **[Reddit Topluluğu](https://www.reddit.com/r/RooCode):** Deneyimlerinizi paylaşın ve başkalarının ne inşa ettiğini görün.
+- **[GitHub Sorunları](https://github.com/RooCodeInc/Roo-Code/issues):** Hataları bildirin ve gelişimi takip edin.
+- **[Özellik İstekleri](https://github.com/RooCodeInc/Roo-Code/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop):** Bir fikriniz mi var? Geliştiricilerle paylaşın.
 
 ---
 
 ## Yerel Kurulum ve Geliştirme
 
-1. Depoyu **klonlayın**:
+1. **Depoyu klonlayın**:
 
 ```sh
 git clone https://github.com/RooCodeInc/Roo-Code.git
@@ -134,10 +182,25 @@ git clone https://github.com/RooCodeInc/Roo-Code.git
 2. **Bağımlılıkları yükleyin**:
 
 ```sh
-npm run install:all
+pnpm install
 ```
 
-3. **Webview'ı başlatın (HMR ile Vite/React uygulaması)**:
+3. **Uzantıyı çalıştırın**:
+
+Roo Code uzantısını çalıştırmanın birkaç yolu vardır:
+
+### Geliştirme Modu (F5)
+
+Aktif geliştirme için VSCode'un yerleşik hata ayıklama özelliğini kullanın:
+
+VSCode'da `F5` tuşuna basın (veya **Çalıştır** → **Hata Ayıklamayı Başlat**'a gidin). Bu, Roo Code uzantısının çalıştığı yeni bir VSCode penceresi açacaktır.
+
+- Web görünümündeki değişiklikler anında görünecektir.
+- Çekirdek uzantıdaki değişiklikler de otomatik olarak sıcak yeniden yüklenecektir.
+
+### Otomatik VSIX Kurulumu
+
+Uzantıyı bir VSIX paketi olarak derlemek ve doğrudan VSCode'a yüklemek için:
 
 ```sh
 npm run dev
@@ -160,11 +223,13 @@ npm run build
 code --install-extension bin/roo-cline-<version>.vsix
 ```
 
-Sürüm oluşturma ve yayınlama için [changesets](https://github.com/changesets/changesets) kullanıyoruz. Sürüm notları için `CHANGELOG.md` dosyamızı kontrol edin.
+---
+
+Sürüm oluşturma ve yayınlama için [changesets](https://github.com/changesets/changesets) kullanıyoruz. Sürüm notları için `CHANGELOG.md` dosyamıza göz atın.
 
 ---
 
-## Sorumluluk Reddi
+## Sorumluluk Reddi Beyanı
 
 **Lütfen dikkat** Alchemi Code, Inc, Alchemi Code ile bağlantılı olarak sağlanan veya kullanıma sunulan herhangi bir kod, model veya diğer araçlar, ilgili herhangi bir üçüncü taraf aracı veya herhangi bir sonuç çıktısı hakkında **hiçbir** temsil veya garanti vermemektedir. Bu tür araçların veya çıktıların kullanımıyla ilişkili **tüm riskleri** üstlenirsiniz; bu tür araçlar **"OLDUĞU GİBİ"** ve **"MEVCUT OLDUĞU GİBİ"** temelinde sağlanır. Bu riskler, fikri mülkiyet ihlali, siber güvenlik açıkları veya saldırılar, önyargı, yanlışlıklar, hatalar, kusurlar, virüsler, kesinti süresi, mal kaybı veya hasarı ve/veya kişisel yaralanma dâhil ancak bunlarla sınırlı olmamak üzere içerebilir. Bu tür araçların veya çıktıların kullanımından (yasallık, uygunluk ve sonuçlar dâhil ancak bunlarla sınırlı olmamak üzere) yalnızca siz sorumlusunuz.
 
@@ -172,7 +237,7 @@ Sürüm oluşturma ve yayınlama için [changesets](https://github.com/changeset
 
 ## Katkıda Bulunma
 
-Topluluk katkılarını seviyoruz! [CONTRIBUTING.md](CONTRIBUTING.md) dosyasını okuyarak başlayın.
+Topluluk katkılarını çok seviyoruz! [CONTRIBUTING.md](CONTRIBUTING.md) dosyamızı okuyarak başlayın.
 
 ---
 

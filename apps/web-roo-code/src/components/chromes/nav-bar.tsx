@@ -8,12 +8,12 @@ import { useState } from "react"
 import { RxGithubLogo } from "react-icons/rx"
 import { VscVscode } from "react-icons/vsc"
 import { HiMenu } from "react-icons/hi"
-import { IoClose } from "react-icons/io5"
 
 import { EXTERNAL_LINKS } from "@/lib/constants"
 import { useLogoSrc } from "@/lib/hooks/use-logo-src"
 import { ScrollButton } from "@/components/ui"
 import ThemeToggle from "@/components/chromes/theme-toggle"
+import { ChevronDown, Cloud, X } from "lucide-react"
 
 interface NavBarProps {
 	stars: string | null
@@ -26,7 +26,7 @@ export function NavBar({ stars, downloads }: NavBarProps) {
 
 	return (
 		<header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
-			<div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+			<div className="container flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
 				<div className="flex items-center">
 					<Link href="/" className="flex items-center">
 						<Image src={logoSrc} alt="Alchemi Code Logo" width={120} height={40} className="h-8 w-auto" />
@@ -34,32 +34,21 @@ export function NavBar({ stars, downloads }: NavBarProps) {
 				</div>
 
 				{/* Desktop Navigation */}
-				<nav className="hidden text-sm font-medium md:flex md:items-center md:space-x-3 xl:space-x-8">
-					{/* note: features and testimonials links are hidden for screen sizes smaller than lg */}
+				<nav className="grow ml-6 hidden text-sm font-medium md:flex md:items-center">
 					<ScrollButton
-						targetId="features"
-						className="text-muted-foreground transition-transform duration-200 hover:scale-105 hover:text-foreground max-lg:hidden">
-						Features
-					</ScrollButton>
-					<ScrollButton
-						targetId="testimonials"
-						className="text-muted-foreground transition-transform duration-200 hover:scale-105 hover:text-foreground max-lg:hidden">
-						Testimonials
+						targetId="product"
+						className="text-muted-foreground px-4 py-6 transition-transform duration-200 hover:scale-105 hover:text-foreground max-lg:hidden">
+						Extension
 					</ScrollButton>
 					<Link
-						href="/evals"
-						className="text-muted-foreground transition-transform duration-200 hover:scale-105 hover:text-foreground">
-						Evals
-					</Link>
-					<Link
-						href="/enterprise"
-						className="text-muted-foreground transition-transform duration-200 hover:scale-105 hover:text-foreground">
-						Enterprise
+						href="/cloud"
+						className="text-muted-foreground px-4 py-6 transition-transform duration-200 hover:scale-105 hover:text-foreground">
+						Cloud
 					</Link>
 					<a
 						href={EXTERNAL_LINKS.DOCUMENTATION}
 						target="_blank"
-						className="text-muted-foreground transition-transform duration-200 hover:scale-105 hover:text-foreground">
+						className="text-muted-foreground px-4 py-6 transition-transform duration-200 hover:scale-105 hover:text-foreground">
 						Docs
 					</a>
 					<a
@@ -75,10 +64,12 @@ export function NavBar({ stars, downloads }: NavBarProps) {
 								Alchemi Code Cloud is coming
 							</span>
 							<a
-								href="/cloud-waitlist"
+								href={EXTERNAL_LINKS.SECURITY}
+								target="_blank"
 								rel="noopener noreferrer"
-								className="font-medium text-primary hover:underline pl-1.5">
-								Sign up
+								className="block px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+								onClick={() => setIsMenuOpen(false)}>
+								Trust Center
 							</a>
 						</div>
 					</div>
@@ -98,26 +89,35 @@ export function NavBar({ stars, downloads }: NavBarProps) {
 					<Link
 						href={EXTERNAL_LINKS.MARKETPLACE}
 						target="_blank"
-						className="hidden items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-all duration-200 hover:bg-primary/80 hover:shadow-lg hover:scale-105 md:flex">
+						className="hidden items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-all duration-200 hover:shadow-lg hover:scale-105 md:flex">
 						<VscVscode className="-mr-[2px] mt-[1px] h-4 w-4" />
 						<span>
 							Install <span className="font-black max-lg:text-xs">&middot;</span>
 						</span>
 						{downloads !== null && <span>{downloads}</span>}
 					</Link>
+					<a
+						href={EXTERNAL_LINKS.CLOUD_APP_LOGIN}
+						target="_blank"
+						rel="noopener noreferrer"
+						className="hidden items-center gap-1.5 rounded-md py-2 text-sm border border-primary-background px-4 font-medium text-primary-background transition-all duration-200 hover:shadow-lg hover:scale-105 md:flex">
+						<Cloud className="inline h-4 w-4" />
+						Log in
+					</a>
 				</div>
 
 				{/* Mobile Menu Button */}
 				<button
 					aria-expanded={isMenuOpen}
 					onClick={() => setIsMenuOpen(!isMenuOpen)}
-					className="flex items-center justify-center rounded-full p-2 transition-colors hover:bg-accent md:hidden"
+					className="relative z-10 flex items-center justify-center rounded-full p-2 transition-colors hover:bg-accent md:hidden"
 					aria-label="Toggle mobile menu">
-					{isMenuOpen ? <IoClose className="h-6 w-6" /> : <HiMenu className="h-6 w-6" />}
+					<HiMenu className={`h-6 w-6 ${isMenuOpen ? "hidden" : "block"}`} />
+					<X className={`h-6 w-6 ${isMenuOpen ? "block" : "hidden"}`} />
 				</button>
 			</div>
 
-			{/* Mobile Menu Panel */}
+			{/* Mobile Menu Panel - Full Screen */}
 			<div
 				className={`absolute left-0 right-0 top-16 z-50 transform border-b border-border bg-background shadow-lg backdrop-blur-none transition-all duration-200 md:hidden ${isMenuOpen ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0"}`}>
 				<nav className="flex flex-col py-2">
@@ -202,9 +202,9 @@ export function NavBar({ stars, downloads }: NavBarProps) {
 							target="_blank"
 							className="inline-flex items-center gap-2 rounded-md p-2 text-sm font-medium text-foreground/80 transition-colors hover:bg-accent hover:text-foreground"
 							onClick={() => setIsMenuOpen(false)}>
-							<VscVscode className="h-5 w-5" />
-							{downloads !== null && <span>{downloads}</span>}
-						</Link>
+							<Cloud className="h-5 w-5" />
+							Log in
+						</a>
 					</div>
 				</nav>
 			</div>

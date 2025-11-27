@@ -1,11 +1,16 @@
 import type { Metadata } from "next"
 import { SEO } from "@/lib/seo"
+import { ogImageUrl } from "@/lib/og"
+import fs from "fs"
+import path from "path"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
+import rehypeRaw from "rehype-raw"
 
-const TITLE = "Terms of Service"
+const TITLE = "Our Terms of Service"
 const DESCRIPTION =
 	"Terms of Service for Alchemi Code Cloud. Learn about our service terms, commercial conditions, and legal framework."
 const PATH = "/terms"
-const OG_IMAGE = SEO.ogImage
 
 export const metadata: Metadata = {
 	title: TITLE,
@@ -20,10 +25,10 @@ export const metadata: Metadata = {
 		siteName: SEO.name,
 		images: [
 			{
-				url: OG_IMAGE.url,
-				width: OG_IMAGE.width,
-				height: OG_IMAGE.height,
-				alt: OG_IMAGE.alt,
+				url: ogImageUrl(TITLE, OG_DESCRIPTION),
+				width: 1200,
+				height: 630,
+				alt: TITLE,
 			},
 		],
 		locale: SEO.locale,
@@ -33,12 +38,19 @@ export const metadata: Metadata = {
 		card: SEO.twitterCard,
 		title: TITLE,
 		description: DESCRIPTION,
-		images: [OG_IMAGE.url],
+		images: [ogImageUrl(TITLE, OG_DESCRIPTION)],
 	},
 	keywords: [...SEO.keywords, "terms of service", "legal", "agreement", "subscription"],
 }
 
+function getTermsContent() {
+	const filePath = path.join(process.cwd(), "src/app/terms/terms.md")
+	return fs.readFileSync(filePath, "utf8")
+}
+
 export default function Terms() {
+	const content = getTermsContent()
+
 	return (
 		<>
 			<div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
@@ -347,6 +359,6 @@ export default function Terms() {
 					</p>
 				</div>
 			</div>
-		</>
+		</div>
 	)
 }

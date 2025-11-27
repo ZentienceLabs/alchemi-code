@@ -122,7 +122,7 @@ Buat Alchemi Code bekerja sesuai cara kamu dengan:
 
 ---
 
-## Setup Lokal & Development
+## Pengaturan & Pengembangan Lokal
 
 1. **Clone** repo:
 
@@ -130,13 +130,19 @@ Buat Alchemi Code bekerja sesuai cara kamu dengan:
 git clone https://github.com/RooCodeInc/Roo-Code.git
 ```
 
-2. **Install dependencies**:
+2. **Instal dependensi**:
 
 ```sh
 pnpm install
 ```
 
-3. **Jalankan extension**:
+3. **Jalankan ekstensi**:
+
+Ada beberapa cara untuk menjalankan ekstensi Roo Code:
+
+### Mode Pengembangan (F5)
+
+Untuk pengembangan aktif, gunakan debugging bawaan VSCode:
 
 Tekan `F5` (atau **Run** → **Start Debugging**) di VSCode untuk membuka window baru dengan Alchemi Code berjalan.
 
@@ -145,20 +151,43 @@ Perubahan pada webview akan muncul langsung. Perubahan pada core extension akan 
 Alternatifnya kamu bisa build .vsix dan install langsung di VSCode:
 
 ```sh
-pnpm vsix
+pnpm install:vsix [-y] [--editor=<command>]
 ```
 
-File `.vsix` akan muncul di direktori `bin/` yang bisa diinstall dengan:
+Perintah ini akan:
 
-```sh
-code --install-extension bin/roo-cline-<version>.vsix
-```
+- Menanyakan perintah editor mana yang akan digunakan (code/cursor/code-insiders) - defaultnya adalah 'code'
+- Mencopot pemasangan versi ekstensi yang ada.
+- Membangun paket VSIX terbaru.
+- Menginstal VSIX yang baru dibangun.
+- Meminta Anda untuk me-restart VS Code agar perubahan dapat diterapkan.
 
-Kami menggunakan [changesets](https://github.com/changesets/changesets) untuk versioning dan publishing. Cek `CHANGELOG.md` kami untuk release notes.
+Pilihan:
+
+- `-y`: Lewati semua prompt konfirmasi dan gunakan default
+- `--editor=<command>`: Tentukan perintah editor (misalnya, `--editor=cursor` atau `--editor=code-insiders`)
+
+### Instalasi VSIX Manual
+
+Jika Anda lebih suka menginstal paket VSIX secara manual:
+
+1.  Pertama, bangun paket VSIX:
+    ```sh
+    pnpm vsix
+    ```
+2.  File `.vsix` akan dibuat di direktori `bin/` (misalnya, `bin/roo-cline-<version>.vsix`).
+3.  Instal secara manual menggunakan VSCode CLI:
+    ```sh
+    code --install-extension bin/roo-cline-<version>.vsix
+    ```
 
 ---
 
-## Disclaimer
+Kami menggunakan [changesets](https://github.com/changesets/changesets) untuk pembuatan versi dan publikasi. Periksa `CHANGELOG.md` kami untuk catatan rilis.
+
+---
+
+## Penafian
 
 **Harap dicatat** bahwa Alchemi Code, Inc **tidak** membuat representasi atau jaminan apapun mengenai kode, model, atau tools lain yang disediakan atau tersedia dalam hubungannya dengan Alchemi Code, tools pihak ketiga terkait, atau output yang dihasilkan. Kamu menanggung **semua risiko** yang terkait dengan penggunaan tools atau output tersebut; tools tersebut disediakan atas dasar **"SEBAGAIMANA ADANYA"** dan **"SEBAGAIMANA TERSEDIA"**. Risiko tersebut dapat mencakup, tanpa terbatas pada, pelanggaran kekayaan intelektual, kerentanan atau serangan siber, bias, ketidakakuratan, kesalahan, cacat, virus, downtime, kehilangan properti atau kerusakan, dan/atau cedera pribadi. Kamu bertanggung jawab penuh atas penggunaan tools atau output tersebut (termasuk, tanpa terbatas pada, legalitas, kesesuaian, dan hasilnya).
 
@@ -166,7 +195,7 @@ Kami menggunakan [changesets](https://github.com/changesets/changesets) untuk ve
 
 ## Berkontribusi
 
-Kami menyukai kontribusi komunitas! Mulai dengan membaca [CONTRIBUTING.md](CONTRIBUTING.md) kami.
+Kami menyukai kontribusi komunitas! Mulailah dengan membaca [CONTRIBUTING.md](CONTRIBUTING.md) kami.
 
 ---
 

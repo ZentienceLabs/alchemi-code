@@ -1,16 +1,68 @@
-<div align="center">
-<sub>
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=RooVeterinaryInc.roo-cline"><img src="https://img.shields.io/badge/VS_Code_Marketplace-007ACC?style=flat&logo=visualstudiocode&logoColor=white" alt="VS Code Marketplace"></a>
+  <a href="https://x.com/roocode"><img src="https://img.shields.io/badge/roocode-000000?style=flat&logo=x&logoColor=white" alt="X"></a>
+  <a href="https://youtube.com/@roocodeyt?feature=shared"><img src="https://img.shields.io/badge/YouTube-FF0000?style=flat&logo=youtube&logoColor=white" alt="YouTube"></a>
+  <a href="https://discord.gg/roocode"><img src="https://img.shields.io/badge/Join%20Discord-5865F2?style=flat&logo=discord&logoColor=white" alt="Join Discord"></a>
+  <a href="https://www.reddit.com/r/RooCode/"><img src="https://img.shields.io/badge/Join%20r%2FRooCode-FF4500?style=flat&logo=reddit&logoColor=white" alt="Join r/RooCode"></a>
+</p>
+<p align="center">
+  <em>快速取得協助 → <a href="https://discord.gg/roocode">加入 Discord</a> • 偏好非同步？→ <a href="https://www.reddit.com/r/RooCode/">加入 r/RooCode</a></em>
+</p>
 
-[English](../../README.md) • [Català](../ca/README.md) • [Deutsch](../de/README.md) • [Español](../es/README.md) • [Français](../fr/README.md) • [हिन्दी](../hi/README.md) • [Bahasa Indonesia](../id/README.md) • [Italiano](../it/README.md) • [日本語](../ja/README.md)
+# Roo Code
 
-</sub>
-<sub>
+> 你的 AI 驅動開發團隊，就在你的編輯器裡
 
-[한국어](../ko/README.md) • [Nederlands](../nl/README.md) • [Polski](../pl/README.md) • [Português (BR)](../pt-BR/README.md) • [Русский](../ru/README.md) • [Türkçe](../tr/README.md) • [Tiếng Việt](../vi/README.md) • [简体中文](../zh-CN/README.md) • <b>繁體中文</b>
+<details>
+  <summary>🌐 可用語言</summary>
 
-</sub>
-</div>
-<br>
+- [English](../../README.md)
+- [Català](../ca/README.md)
+- [Deutsch](../de/README.md)
+- [Español](../es/README.md)
+- [Français](../fr/README.md)
+- [हिंदी](../hi/README.md)
+- [Bahasa Indonesia](../id/README.md)
+- [Italiano](../it/README.md)
+- [日本語](../ja/README.md)
+- [한국어](../ko/README.md)
+- [Nederlands](../nl/README.md)
+- [Polski](../pl/README.md)
+- [Português (BR)](../pt-BR/README.md)
+- [Русский](../ru/README.md)
+- [Türkçe](../tr/README.md)
+- [Tiếng Việt](../vi/README.md)
+- [简体中文](../zh-CN/README.md)
+- [繁體中文](../zh-TW/README.md)
+- ...
+  </details>
+
+---
+
+## Roo Code 能為您做什麼？
+
+- 從自然語言描述生成程式碼
+- 使用模式進行調整：程式碼、架構師、詢問、偵錯和自訂模式
+- 重構和偵錯現有程式碼
+- 編寫和更新文件
+- 回答關於您程式碼庫的問題
+- 自動化重複性任務
+- 使用 MCP 伺服器
+
+## 模式
+
+Roo Code 適應您的工作方式，而不是相反：
+
+- 程式碼模式：日常編碼、編輯和檔案操作
+- 架構師模式：規劃系統、規格和遷移
+- 詢問模式：快速回答、解釋和文件
+- 偵錯模式：追蹤問題、新增日誌、隔離根本原因
+- 自訂模式：為您的團隊或工作流程建置專門的模式
+- Roomote Control：Roomote Control 讓你能遠端控制在本機 VS Code 執行個體中運行的工作。
+
+更多資訊：[使用模式](https://docs.roocode.com/basic-usage/using-modes) • [自訂模式](https://docs.roocode.com/advanced-usage/custom-modes) • [Roomote Control](https://docs.roocode.com/roo-code-cloud/roomote-control)
+
+## 教學和功能影片
 
 <div align="center">
   <h2>加入 Alchemi Code 社群</h2>
@@ -124,7 +176,7 @@ Alchemi Code 可以配合您的需求進行調整：
 
 ---
 
-## 開發環境設定
+## 本地設定與開發
 
 1. **複製**儲存庫：
 
@@ -132,13 +184,28 @@ Alchemi Code 可以配合您的需求進行調整：
 git clone https://github.com/RooCodeInc/Roo-Code.git
 ```
 
-2. **安裝相依套件**：
+2. **安裝依賴套件**:
 
 ```sh
-npm run install:all
+pnpm install
 ```
 
-3. **啟動網頁檢視（Vite/React 應用程式，支援 HMR）**：
+3. **執行擴充功能**:
+
+有幾種方法可以執行 Roo Code 擴充功能：
+
+### 開發模式（F5）
+
+對於積極的開發，請使用 VSCode 的內建偵錯功能：
+
+在 VSCode 中按 `F5`（或前往 **執行** → **開始偵錯**）。這將在執行 Roo Code 擴充功能的新 VSCode 視窗中開啟。
+
+- 對 webview 的變更將立即顯示。
+- 對核心擴充功能的變更也將自動熱重載。
+
+### 自動化 VSIX 安裝
+
+要將擴充功能建置為 VSIX 套件並直接安裝到 VSCode 中：
 
 ```sh
 npm run dev
@@ -161,7 +228,9 @@ npm run build
 code --install-extension bin/roo-cline-<version>.vsix
 ```
 
-我們使用 [changesets](https://github.com/changesets/changesets) 進行版本控制和發布。檢視我們的 `CHANGELOG.md` 取得發布說明。
+---
+
+我們使用 [changesets](https://github.com/changesets/changesets) 進行版本控制和發布。有關發行說明，請查看我們的 `CHANGELOG.md`。
 
 ---
 
@@ -173,7 +242,7 @@ code --install-extension bin/roo-cline-<version>.vsix
 
 ## 貢獻
 
-我們喜歡社群貢獻！透過閱讀我們的 [CONTRIBUTING.md](CONTRIBUTING.md) 開始。
+我們歡迎社群貢獻！請閱讀我們的 [CONTRIBUTING.md](CONTRIBUTING.md) 開始。
 
 ---
 

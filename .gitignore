@@ -47,6 +47,9 @@ logs
 .vercel
 .roo/mcp.json
 
+# Qdrant
+qdrant_storage/
+
 .history/
 .github/
 

@@ -1,16 +1,69 @@
-<div align="center">
-<sub>
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=RooVeterinaryInc.roo-cline"><img src="https://img.shields.io/badge/VS_Code_Marketplace-007ACC?style=flat&logo=visualstudiocode&logoColor=white" alt="VS Code Marketplace"></a>
+  <a href="https://x.com/roocode"><img src="https://img.shields.io/badge/roocode-000000?style=flat&logo=x&logoColor=white" alt="X"></a>
+  <a href="https://youtube.com/@roocodeyt?feature=shared"><img src="https://img.shields.io/badge/YouTube-FF0000?style=flat&logo=youtube&logoColor=white" alt="YouTube"></a>
+  <a href="https://discord.gg/roocode"><img src="https://img.shields.io/badge/Join%20Discord-5865F2?style=flat&logo=discord&logoColor=white" alt="Join Discord"></a>
+  <a href="https://www.reddit.com/r/RooCode/"><img src="https://img.shields.io/badge/Join%20r%2FRooCode-FF4500?style=flat&logo=reddit&logoColor=white" alt="Join r/RooCode"></a>
+</p>
+<p align="center">
+  <em>快速获取帮助 → <a href="https://discord.gg/roocode">加入 Discord</a> • 偏好异步？→ <a href="https://www.reddit.com/r/RooCode/">加入 r/RooCode</a></em>
+</p>
 
-[English](../../README.md) • [Català](../ca/README.md) • [Deutsch](../de/README.md) • [Español](../es/README.md) • [Français](../fr/README.md) • [हिन्दी](../hi/README.md) • [Bahasa Indonesia](../id/README.md) • [Italiano](../it/README.md) • [日本語](../ja/README.md)
+# Roo Code
 
-</sub>
-<sub>
+> 你的 AI 驱动开发团队，就在你的编辑器里
 
-[한국어](../ko/README.md) • [Nederlands](../nl/README.md) • [Polski](../pl/README.md) • [Português (BR)](../pt-BR/README.md) • [Русский](../ru/README.md) • [Türkçe](../tr/README.md) • [Tiếng Việt](../vi/README.md) • <b>简体中文</b> • [繁體中文](../zh-TW/README.md)
+<details>
+  <summary>🌐 可用语言</summary>
 
-</sub>
-</div>
-<br>
+- [English](../../README.md)
+- [Català](../ca/README.md)
+- [Deutsch](../de/README.md)
+- [Español](../es/README.md)
+- [Français](../fr/README.md)
+- [हिंदी](../hi/README.md)
+- [Bahasa Indonesia](../id/README.md)
+- [Italiano](../it/README.md)
+- [日本語](../ja/README.md)
+- [한국어](../ko/README.md)
+- [Nederlands](../nl/README.md)
+- [Polski](../pl/README.md)
+- [Português (BR)](../pt-BR/README.md)
+- [Русский](../ru/README.md)
+- [Türkçe](../tr/README.md)
+- [Tiếng Việt](../vi/README.md)
+- [简体中文](../zh-CN/README.md)
+- [繁體中文](../zh-TW/README.md)
+- ...
+  </details>
+
+---
+
+## Roo Code 能为您做什么？
+
+- 从自然语言描述生成代码
+- 使用模式进行调整：代码、架构师、提问、调试和自定义模式
+- 重构和调试现有代码
+- 编写和更新文档
+- 回答关于您的代码库的问题
+- 自动化重复性任务
+- 使用 MCP 服务器
+
+## 模式
+
+Roo Code 适应您的工作方式，而不是相反：
+
+- 代码模式：日常编码、编辑和文件操作
+- 架构师模式：规划系统、规范和迁移
+- 提问模式：快速回答、解释和文档
+- 调试模式：跟踪问题、添加日志、隔离根本原因
+- 自定义模式：为您的团队或工作流程构建专门的模式
+- Roomote Control：Roomote Control 允许你远程控制在本地 VS Code 实例中运行的任务。
+
+了解更多：[使用模式](https://docs.roocode.com/basic-usage/using-modes) • [自定义模式](https://docs.roocode.com/advanced-usage/custom-modes) • [Roomote Control](https://docs.roocode.com/roo-code-cloud/roomote-control)
+
+## 教程和功能视频
+
 <div align="center">
   <h2>加入 Alchemi Code 社区</h2>
   <p>与开发者联系，贡献想法，紧跟最新的 AI 驱动编码工具。</p>
@@ -123,7 +176,7 @@ MCP 通过允许您添加无限自定义工具来扩展 Alchemi Code 的能力�
 
 ---
 
-## 本地设置和开发
+## 本地设置与开发
 
 1. **克隆**仓库：
 
@@ -131,13 +184,28 @@ MCP 通过允许您添加无限自定义工具来扩展 Alchemi Code 的能力�
 git clone https://github.com/RooCodeInc/Roo-Code.git
 ```
 
-2. **安装依赖**：
+2. **安装依赖项**:
 
 ```sh
-npm run install:all
+pnpm install
 ```
 
-3. **启动网页视图（Vite/React 应用，带热模块替换）**：
+3. **运行扩展程序**:
+
+有几种方法可以运行 Roo Code 扩展程序：
+
+### 开发模式（F5）
+
+对于积极开发，请使用 VSCode 的内置调试功能：
+
+在 VSCode 中按 `F5`（或转到 **Run** → **Start Debugging**）。这将在运行 Roo Code 扩展程序的新 VSCode 窗口中打开。
+
+- 对 webview 的更改将立即显示。
+- 对核心扩展程序的更改也会自动热重载。
+
+### 自动化 VSIX 安装
+
+要将扩展程序构建为 VSIX 包并直接安装到 VSCode 中：
 
 ```sh
 npm run dev
@@ -160,7 +228,9 @@ npm run build
 code --install-extension bin/roo-cline-<version>.vsix
 ```
 
-我们使用 [changesets](https://github.com/changesets/changesets) 进行版本控制和发布。查看我们的 `CHANGELOG.md` 获取发布说明。
+---
+
+我们使用 [changesets](https://github.com/changesets/changesets) 进行版本控制和发布。有关发行说明，请查看我们的 `CHANGELOG.md`。
 
 ---
 
@@ -172,7 +242,7 @@ code --install-extension bin/roo-cline-<version>.vsix
 
 ## 贡献
 
-我们热爱社区贡献！通过阅读我们的 [CONTRIBUTING.md](CONTRIBUTING.md) 开始。
+我们欢迎社区贡献！请阅读我们的 [CONTRIBUTING.md](CONTRIBUTING.md) 开始。
 
 ---
 

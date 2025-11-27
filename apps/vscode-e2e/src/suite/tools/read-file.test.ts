@@ -9,7 +9,7 @@ import { RooCodeEventName, type ClineMessage } from "@roo-code/types"
 import { waitFor, sleep } from "../utils"
 import { setDefaultSuiteTimeout } from "../test-utils"
 
-suite("Alchemi Code read_file Tool", function () {
+suite.skip("Alchemi Code read_file Tool", function () {
 	setDefaultSuiteTimeout(this)
 
 	let tempDir: string

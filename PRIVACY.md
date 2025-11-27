@@ -1,6 +1,6 @@
 # Alchemi Code Privacy Policy
 
-**Last Updated: August 20th, 2025**
+**Last Updated: September 11th, 2025**
 
 Alchemi Code respects your privacy and is committed to transparency about how we handle your data. Below is a simple breakdown of where key pieces of data go—and, importantly, where they don’t.
 

@@ -1,62 +1,54 @@
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
-import { useDeepCompareEffect, useEvent, useMount } from "react-use"
+import { useDeepCompareEffect, useEvent } from "react-use"
 import debounce from "debounce"
 import { Virtuoso, type VirtuosoHandle } from "react-virtuoso"
 import removeMd from "remove-markdown"
-import { VSCodeButton } from "@vscode/webview-ui-toolkit/react"
+import { VSCodeLink } from "@vscode/webview-ui-toolkit/react"
 import useSound from "use-sound"
 import { LRUCache } from "lru-cache"
+import { Trans } from "react-i18next"
 
 import { useDebounceEffect } from "@src/utils/useDebounceEffect"
 import { appendImages } from "@src/utils/imageUtils"
 
 import type { ClineAsk, ClineMessage } from "@roo-code/types"
 
-import { ClineSayBrowserAction, ClineSayTool, ExtensionMessage } from "@roo/ExtensionMessage"
-import { McpServer, McpTool } from "@roo/mcp"
+import { ClineSayTool, ExtensionMessage } from "@roo/ExtensionMessage"
 import { findLast } from "@roo/array"
-import { FollowUpData, SuggestionItem } from "@roo-code/types"
+import { SuggestionItem } from "@roo-code/types"
 import { combineApiRequests } from "@roo/combineApiRequests"
 import { combineCommandSequences } from "@roo/combineCommandSequences"
 import { getApiMetrics } from "@roo/getApiMetrics"
 import { AudioType } from "@roo/WebviewMessage"
 import { getAllModes } from "@roo/modes"
 import { ProfileValidator } from "@roo/ProfileValidator"
+import { getLatestTodo } from "@roo/todo"
 
 import { vscode } from "@src/utils/vscode"
-import {
-	getCommandDecision,
-	CommandDecision,
-	findLongestPrefixMatch,
-	parseCommand,
-} from "@src/utils/command-validation"
-import { useTranslation } from "react-i18next"
 import { useAppTranslation } from "@src/i18n/TranslationContext"
 import { useExtensionState } from "@src/context/ExtensionStateContext"
 import { useSelectedModel } from "@src/components/ui/hooks/useSelectedModel"
 import RooHero from "@src/components/welcome/RooHero"
 import RooTips from "@src/components/welcome/RooTips"
-import RooCloudCTA from "@src/components/welcome/RooCloudCTA"
-import { StandardTooltip } from "@src/components/ui"
-import { useAutoApprovalState } from "@src/hooks/useAutoApprovalState"
-import { useAutoApprovalToggles } from "@src/hooks/useAutoApprovalToggles"
+import { StandardTooltip, Button } from "@src/components/ui"
+import { CloudUpsellDialog } from "@src/components/cloud/CloudUpsellDialog"
 
 // import TelemetryBanner from "../common/TelemetryBanner"
 import VersionIndicator from "../common/VersionIndicator"
-import { useTaskSearch } from "../history/useTaskSearch"
 import HistoryPreview from "../history/HistoryPreview"
 import Announcement from "./Announcement"
-import BrowserSessionRow from "./BrowserSessionRow"
+import BrowserActionRow from "./BrowserActionRow"
+import BrowserSessionStatusRow from "./BrowserSessionStatusRow"
 import ChatRow from "./ChatRow"
-import ChatTextArea from "./ChatTextArea"
+import { ChatTextArea } from "./ChatTextArea"
 import TaskHeader from "./TaskHeader"
-import AutoApproveMenu from "./AutoApproveMenu"
 import SystemPromptWarning from "./SystemPromptWarning"
 import ProfileViolationWarning from "./ProfileViolationWarning"
 import { CheckpointWarning } from "./CheckpointWarning"
-import QueuedMessages from "./QueuedMessages"
-import { getLatestTodo } from "@roo/todo"
-import { QueuedMessage } from "@roo-code/types"
+import { QueuedMessages } from "./QueuedMessages"
+import DismissibleUpsell from "../common/DismissibleUpsell"
+import { useCloudUpsell } from "@src/hooks/useCloudUpsell"
+import { Cloud } from "lucide-react"
 
 export interface ChatViewProps {
 	isHidden: boolean
@@ -68,7 +60,7 @@ export interface ChatViewRef {
 	acceptInput: () => void
 }
 
-export const MAX_IMAGES_PER_MESSAGE = 20 // Anthropic limits to 20 images
+export const MAX_IMAGES_PER_MESSAGE = 20 // This is the Anthropic limit.
 
 const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0
 
@@ -77,13 +69,15 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 	ref,
 ) => {
 	const isMountedRef = useRef(true)
+
 	const [audioBaseUri] = useState(() => {
 		const w = window as any
 		return w.AUDIO_BASE_URI || ""
 	})
+
 	const { t } = useAppTranslation()
-	const { t: tSettings } = useTranslation("settings")
 	const modeShortcutText = `${isMac ? "⌘" : "Ctrl"} + . ${t("chat:forNextMode")}, ${isMac ? "⌘" : "Ctrl"} + Shift + . ${t("chat:forPreviousMode")}`
+
 	const {
 		clineMessages: messages,
 		currentTaskItem,
@@ -91,53 +85,25 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 		taskHistory,
 		apiConfiguration,
 		organizationAllowList,
-		mcpServers,
-		alwaysAllowBrowser,
-		alwaysAllowReadOnly,
-		alwaysAllowReadOnlyOutsideWorkspace,
-		alwaysAllowWrite,
-		alwaysAllowWriteOutsideWorkspace,
-		alwaysAllowWriteProtected,
-		alwaysAllowExecute,
-		alwaysAllowMcp,
-		allowedCommands,
-		deniedCommands,
-		writeDelayMs,
-		followupAutoApproveTimeoutMs,
 		mode,
 		setMode,
-		autoApprovalEnabled,
 		alwaysAllowModeSwitch,
-		alwaysAllowSubtasks,
-		alwaysAllowFollowupQuestions,
 		alwaysAllowUpdateTodoList,
 		customModes,
 		// telemetrySetting,
 		hasSystemPromptOverride,
-		historyPreviewCollapsed, // Added historyPreviewCollapsed
 		soundEnabled,
 		soundVolume,
 		cloudIsAuthenticated,
+		messageQueue = [],
+		isBrowserSessionActive,
 	} = useExtensionState()
 
 	const messagesRef = useRef(messages)
+
 	useEffect(() => {
 		messagesRef.current = messages
 	}, [messages])
-
-	const { tasks } = useTaskSearch()
-
-	// Initialize expanded state based on the persisted setting (default to expanded if undefined)
-	const [isExpanded, setIsExpanded] = useState(
-		historyPreviewCollapsed === undefined ? true : !historyPreviewCollapsed,
-	)
-
-	const toggleExpanded = useCallback(() => {
-		const newState = !isExpanded
-		setIsExpanded(newState)
-		// Send message to extension to persist the new collapsed state
-		vscode.postMessage({ type: "setHistoryPreviewCollapsed", bool: !newState })
-	}, [isExpanded])
 
 	// Leaving this less safe version here since if the first message is not a
 	// task, then the extension is in a bad state and needs to be debugged (see
@@ -170,12 +136,11 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 	const textAreaRef = useRef<HTMLTextAreaElement>(null)
 	const [sendingDisabled, setSendingDisabled] = useState(false)
 	const [selectedImages, setSelectedImages] = useState<string[]>([])
-	const [messageQueue, setMessageQueue] = useState<QueuedMessage[]>([])
-	const isProcessingQueueRef = useRef(false)
-	const retryCountRef = useRef<Map<string, number>>(new Map())
-	const MAX_RETRY_ATTEMPTS = 3
 
-	// we need to hold on to the ask because useEffect > lastMessage will always let us know when an ask comes in and handle it, but by the time handleMessage is called, the last message might not be the ask anymore (it could be a say that followed)
+	// We need to hold on to the ask because useEffect > lastMessage will always
+	// let us know when an ask comes in and handle it, but by the time
+	// handleMessage is called, the last message might not be the ask anymore
+	// (it could be a say that followed).
 	const [clineAsk, setClineAsk] = useState<ClineAsk | undefined>(undefined)
 	const [enableButtons, setEnableButtons] = useState<boolean>(false)
 	const [primaryButtonText, setPrimaryButtonText] = useState<string | undefined>(undefined)
@@ -190,7 +155,9 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 	const [isAtBottom, setIsAtBottom] = useState(false)
 	const lastTtsRef = useRef<string>("")
 	const [wasStreaming, setWasStreaming] = useState<boolean>(false)
-	const [showCheckpointWarning, setShowCheckpointWarning] = useState<boolean>(false)
+	const [checkpointWarning, setCheckpointWarning] = useState<
+		{ type: "WAIT_TIMEOUT" | "INIT_TIMEOUT"; timeout: number } | undefined
+	>(undefined)
 	const [isCondensing, setIsCondensing] = useState<boolean>(false)
 	const [showAnnouncementModal, setShowAnnouncementModal] = useState(false)
 	const everVisibleMessagesTsRef = useRef<LRUCache<number, boolean>>(
@@ -207,6 +174,15 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 	useEffect(() => {
 		clineAskRef.current = clineAsk
 	}, [clineAsk])
+
+	const {
+		isOpen: isUpsellOpen,
+		openUpsell,
+		closeUpsell,
+		handleConnect,
+	} = useCloudUpsell({
+		autoOpenOnAuth: false,
+	})
 
 	// Keep inputValueRef in sync with inputValue state
 	useEffect(() => {
@@ -225,45 +201,40 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 		[apiConfiguration, organizationAllowList],
 	)
 
-	// UI layout depends on the last 2 messages
-	// (since it relies on the content of these messages, we are deep comparing. i.e. the button state after hitting button sets enableButtons to false, and this effect otherwise would have to true again even if messages didn't change
+	// UI layout depends on the last 2 messages (since it relies on the content
+	// of these messages, we are deep comparing) i.e. the button state after
+	// hitting button sets enableButtons to false,  and this effect otherwise
+	// would have to true again even if messages didn't change.
 	const lastMessage = useMemo(() => messages.at(-1), [messages])
 	const secondLastMessage = useMemo(() => messages.at(-2), [messages])
 
-	// Setup sound hooks with use-sound
 	const volume = typeof soundVolume === "number" ? soundVolume : 0.5
-	const soundConfig = {
-		volume,
-		// useSound expects 'disabled' property, not 'soundEnabled'
-		soundEnabled,
-	}
+	const [playNotification] = useSound(`${audioBaseUri}/notification.wav`, { volume, soundEnabled })
+	const [playCelebration] = useSound(`${audioBaseUri}/celebration.wav`, { volume, soundEnabled })
+	const [playProgressLoop] = useSound(`${audioBaseUri}/progress_loop.wav`, { volume, soundEnabled })
 
-	const getAudioUrl = (path: string) => {
-		return `${audioBaseUri}/${path}`
-	}
+	const playSound = useCallback(
+		(audioType: AudioType) => {
+			if (!soundEnabled) {
+				return
+			}
 
-	// Use the getAudioUrl helper function
-	const [playNotification] = useSound(getAudioUrl("notification.wav"), soundConfig)
-	const [playCelebration] = useSound(getAudioUrl("celebration.wav"), soundConfig)
-	const [playProgressLoop] = useSound(getAudioUrl("progress_loop.wav"), soundConfig)
-
-	function playSound(audioType: AudioType) {
-		// Play the appropriate sound based on type
-		// The disabled state is handled by the useSound hook configuration
-		switch (audioType) {
-			case "notification":
-				playNotification()
-				break
-			case "celebration":
-				playCelebration()
-				break
-			case "progress_loop":
-				playProgressLoop()
-				break
-			default:
-				console.warn(`Unknown audio type: ${audioType}`)
-		}
-	}
+			switch (audioType) {
+				case "notification":
+					playNotification()
+					break
+				case "celebration":
+					playCelebration()
+					break
+				case "progress_loop":
+					playProgressLoop()
+					break
+				default:
+					console.warn(`Unknown audio type: ${audioType}`)
+			}
+		},
+		[soundEnabled, playNotification, playCelebration, playProgressLoop],
+	)
 
 	function playTts(text: string) {
 		vscode.postMessage({ type: "playTts", text })
@@ -297,9 +268,6 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 							setSecondaryButtonText(t("chat:startNewTask.title"))
 							break
 						case "followup":
-							if (!isPartial) {
-								playSound("notification")
-							}
 							setSendingDisabled(isPartial)
 							setClineAsk("followup")
 							// setting enable buttons to `false` would trigger a focus grab when
@@ -311,9 +279,6 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 							setSecondaryButtonText(undefined)
 							break
 						case "tool":
-							if (!isAutoApproved(lastMessage) && !isPartial) {
-								playSound("notification")
-							}
 							setSendingDisabled(isPartial)
 							setClineAsk("tool")
 							setEnableButtons(!isPartial)
@@ -323,6 +288,7 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 								case "appliedDiff":
 								case "newFileCreated":
 								case "insertContent":
+								case "generateImage":
 									setPrimaryButtonText(t("chat:save.title"))
 									setSecondaryButtonText(t("chat:reject.title"))
 									break
@@ -346,9 +312,6 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 							}
 							break
 						case "browser_action_launch":
-							if (!isAutoApproved(lastMessage) && !isPartial) {
-								playSound("notification")
-							}
 							setSendingDisabled(isPartial)
 							setClineAsk("browser_action_launch")
 							setEnableButtons(!isPartial)
@@ -356,9 +319,6 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 							setSecondaryButtonText(t("chat:reject.title"))
 							break
 						case "command":
-							if (!isAutoApproved(lastMessage) && !isPartial) {
-								playSound("notification")
-							}
 							setSendingDisabled(isPartial)
 							setClineAsk("command")
 							setEnableButtons(!isPartial)
@@ -373,9 +333,6 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 							setSecondaryButtonText(t("chat:killCommand.title"))
 							break
 						case "use_mcp_server":
-							if (!isAutoApproved(lastMessage) && !isPartial) {
-								playSound("notification")
-							}
 							setSendingDisabled(isPartial)
 							setClineAsk("use_mcp_server")
 							setEnableButtons(!isPartial)
@@ -383,8 +340,9 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 							setSecondaryButtonText(t("chat:reject.title"))
 							break
 						case "completion_result":
-							// extension waiting for feedback. but we can just present a new task button
-							if (!isPartial) {
+							// Extension waiting for feedback, but we can just present a new task button.
+							// Only play celebration sound if there are no queued messages.
+							if (!isPartial && messageQueue.length === 0) {
 								playSound("celebration")
 							}
 							setSendingDisabled(isPartial)
@@ -453,7 +411,7 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 	}, [messages.length])
 
 	useEffect(() => {
-		// Reset UI states
+		// Reset UI states only when task changes
 		setExpandedRows({})
 		everVisibleMessagesTsRef.current.clear() // Clear for new task
 		setCurrentFollowUpTs(null) // Clear follow-up answered state for new task
@@ -467,11 +425,6 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 		}
 		// Reset user response flag for new task
 		userRespondedRef.current = false
-
-		// Clear message queue when starting a new task
-		setMessageQueue([])
-		// Clear retry counts
-		retryCountRef.current.clear()
 	}, [task?.ts])
 
 	useEffect(() => {
@@ -583,128 +536,74 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 	 * Handles sending messages to the extension
 	 * @param text - The message text to send
 	 * @param images - Array of image data URLs to send with the message
-	 * @param fromQueue - Internal flag indicating if this message is being sent from the queue (prevents re-queueing)
 	 */
 	const handleSendMessage = useCallback(
-		(text: string, images: string[], fromQueue = false) => {
-			try {
-				text = text.trim()
+		(text: string, images: string[]) => {
+			text = text.trim()
 
-				if (text || images.length > 0) {
-					if (sendingDisabled && !fromQueue) {
-						// Generate a more unique ID using timestamp + random component
-						const messageId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-						setMessageQueue((prev: QueuedMessage[]) => [...prev, { id: messageId, text, images }])
+			if (text || images.length > 0) {
+				// Queue message if:
+				// - Task is busy (sendingDisabled)
+				// - API request in progress (isStreaming)
+				// - Queue has items (preserve message order during drain)
+				if (sendingDisabled || isStreaming || messageQueue.length > 0) {
+					try {
+						console.log("queueMessage", text, images)
+						vscode.postMessage({ type: "queueMessage", text, images })
 						setInputValue("")
 						setSelectedImages([])
-						return
-					}
-					// Mark that user has responded - this prevents any pending auto-approvals
-					userRespondedRef.current = true
-
-					if (messagesRef.current.length === 0) {
-						vscode.postMessage({ type: "newTask", text, images })
-					} else if (clineAskRef.current) {
-						if (clineAskRef.current === "followup") {
-							markFollowUpAsAnswered()
-						}
-
-						// Use clineAskRef.current
-						switch (
-							clineAskRef.current // Use clineAskRef.current
-						) {
-							case "followup":
-							case "tool":
-							case "browser_action_launch":
-							case "command": // User can provide feedback to a tool or command use.
-							case "command_output": // User can send input to command stdin.
-							case "use_mcp_server":
-							case "completion_result": // If this happens then the user has feedback for the completion result.
-							case "resume_task":
-							case "resume_completed_task":
-							case "mistake_limit_reached":
-								vscode.postMessage({
-									type: "askResponse",
-									askResponse: "messageResponse",
-									text,
-									images,
-								})
-								break
-							// There is no other case that a textfield should be enabled.
-						}
-					} else {
-						// This is a new message in an ongoing task.
-						vscode.postMessage({ type: "askResponse", askResponse: "messageResponse", text, images })
+					} catch (error) {
+						console.error(
+							`Failed to queue message: ${error instanceof Error ? error.message : String(error)}`,
+						)
 					}
 
-					handleChatReset()
+					return
 				}
-			} catch (error) {
-				console.error("Error in handleSendMessage:", error)
-				// If this was a queued message, we should handle it differently
-				if (fromQueue) {
-					throw error // Re-throw to be caught by the queue processor
+
+				// Mark that user has responded - this prevents any pending auto-approvals.
+				userRespondedRef.current = true
+
+				if (messagesRef.current.length === 0) {
+					vscode.postMessage({ type: "newTask", text, images })
+				} else if (clineAskRef.current) {
+					if (clineAskRef.current === "followup") {
+						markFollowUpAsAnswered()
+					}
+
+					// Use clineAskRef.current
+					switch (
+						clineAskRef.current // Use clineAskRef.current
+					) {
+						case "followup":
+						case "tool":
+						case "browser_action_launch":
+						case "command": // User can provide feedback to a tool or command use.
+						case "command_output": // User can send input to command stdin.
+						case "use_mcp_server":
+						case "completion_result": // If this happens then the user has feedback for the completion result.
+						case "resume_task":
+						case "resume_completed_task":
+						case "mistake_limit_reached":
+							vscode.postMessage({
+								type: "askResponse",
+								askResponse: "messageResponse",
+								text,
+								images,
+							})
+							break
+						// There is no other case that a textfield should be enabled.
+					}
+				} else {
+					// This is a new message in an ongoing task.
+					vscode.postMessage({ type: "askResponse", askResponse: "messageResponse", text, images })
 				}
-				// For direct sends, we could show an error to the user
-				// but for now we'll just log it
+
+				handleChatReset()
 			}
 		},
-		[handleChatReset, markFollowUpAsAnswered, sendingDisabled], // messagesRef and clineAskRef are stable
+		[handleChatReset, markFollowUpAsAnswered, sendingDisabled, isStreaming, messageQueue.length], // messagesRef and clineAskRef are stable
 	)
-
-	useEffect(() => {
-		// Early return if conditions aren't met
-		// Also don't process queue if there's an API error (clineAsk === "api_req_failed")
-		if (
-			sendingDisabled ||
-			messageQueue.length === 0 ||
-			isProcessingQueueRef.current ||
-			clineAsk === "api_req_failed"
-		) {
-			return
-		}
-
-		// Mark as processing immediately to prevent race conditions
-		isProcessingQueueRef.current = true
-
-		// Process the first message in the queue
-		const [nextMessage, ...remaining] = messageQueue
-
-		// Update queue immediately to prevent duplicate processing
-		setMessageQueue(remaining)
-
-		// Process the message
-		Promise.resolve()
-			.then(() => {
-				handleSendMessage(nextMessage.text, nextMessage.images, true)
-				// Clear retry count on success
-				retryCountRef.current.delete(nextMessage.id)
-			})
-			.catch((error) => {
-				console.error("Failed to send queued message:", error)
-
-				// Get current retry count
-				const retryCount = retryCountRef.current.get(nextMessage.id) || 0
-
-				// Only re-add if under retry limit
-				if (retryCount < MAX_RETRY_ATTEMPTS) {
-					retryCountRef.current.set(nextMessage.id, retryCount + 1)
-					// Re-add the message to the end of the queue
-					setMessageQueue((current: QueuedMessage[]) => [...current, nextMessage])
-				} else {
-					console.error(`Message ${nextMessage.id} failed after ${MAX_RETRY_ATTEMPTS} attempts, discarding`)
-					retryCountRef.current.delete(nextMessage.id)
-				}
-			})
-			.finally(() => {
-				isProcessingQueueRef.current = false
-			})
-
-		// Cleanup function to handle component unmount
-		return () => {
-			isProcessingQueueRef.current = false
-		}
-	}, [sendingDisabled, messageQueue, handleSendMessage, clineAsk])
 
 	const handleSetChatBoxMessage = useCallback(
 		(text: string, images: string[]) => {
@@ -720,18 +619,6 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 		},
 		[inputValue, selectedImages],
 	)
-
-	// Cleanup retry count map on unmount
-	useEffect(() => {
-		// Store refs in variables to avoid stale closure issues
-		const retryCountMap = retryCountRef.current
-		const isProcessingRef = isProcessingQueueRef
-
-		return () => {
-			retryCountMap.clear()
-			isProcessingRef.current = false
-		}
-	}, [])
 
 	const startNewTask = useCallback(() => vscode.postMessage({ type: "clearTask" }), [])
 
@@ -894,6 +781,12 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 						setIsCondensing(false)
 					}
 					break
+				case "checkpointInitWarning":
+					setCheckpointWarning(message.checkpointWarning)
+					break
+				case "interactionRequired":
+					playSound("notification")
+					break
 			}
 			// textAreaRef.current is not explicitly required here since React
 			// guarantees that ref will be stable across re-renders, and we're
@@ -910,18 +803,47 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 			handleSetChatBoxMessage,
 			handlePrimaryButtonClick,
 			handleSecondaryButtonClick,
+			setCheckpointWarning,
+			playSound,
 		],
 	)
 
 	useEvent("message", handleMessage)
 
-	// NOTE: the VSCode window needs to be focused for this to work.
-	useMount(() => textAreaRef.current?.focus())
-
 	const visibleMessages = useMemo(() => {
+		// Pre-compute checkpoint hashes that have associated user messages for O(1) lookup
+		const userMessageCheckpointHashes = new Set<string>()
+		modifiedMessages.forEach((msg) => {
+			if (
+				msg.say === "user_feedback" &&
+				msg.checkpoint &&
+				(msg.checkpoint as any).type === "user_message" &&
+				(msg.checkpoint as any).hash
+			) {
+				userMessageCheckpointHashes.add((msg.checkpoint as any).hash)
+			}
+		})
+
 		// Remove the 500-message limit to prevent array index shifting
 		// Virtuoso is designed to efficiently handle large lists through virtualization
-		const newVisibleMessages = modifiedMessages.filter((message: ClineMessage) => {
+		const newVisibleMessages = modifiedMessages.filter((message) => {
+			// Filter out checkpoint_saved messages that should be suppressed
+			if (message.say === "checkpoint_saved") {
+				// Check if this checkpoint has the suppressMessage flag set
+				if (
+					message.checkpoint &&
+					typeof message.checkpoint === "object" &&
+					"suppressMessage" in message.checkpoint &&
+					message.checkpoint.suppressMessage
+				) {
+					return false
+				}
+				// Also filter out checkpoint messages associated with user messages (legacy behavior)
+				if (message.text && userMessageCheckpointHashes.has(message.text)) {
+					return false
+				}
+			}
+
 			if (everVisibleMessagesTsRef.current.has(message.ts)) {
 				const alwaysHiddenOnceProcessedAsk: ClineAsk[] = [
 					"api_req_failed",
@@ -1009,222 +931,6 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 		[isHidden, sendingDisabled, enableButtons],
 	)
 
-	const isReadOnlyToolAction = useCallback((message: ClineMessage | undefined) => {
-		if (message?.type === "ask") {
-			if (!message.text) {
-				return true
-			}
-
-			const tool = JSON.parse(message.text)
-
-			return [
-				"readFile",
-				"listFiles",
-				"listFilesTopLevel",
-				"listFilesRecursive",
-				"listCodeDefinitionNames",
-				"searchFiles",
-				"codebaseSearch",
-			].includes(tool.tool)
-		}
-
-		return false
-	}, [])
-
-	const isWriteToolAction = useCallback((message: ClineMessage | undefined) => {
-		if (message?.type === "ask") {
-			if (!message.text) {
-				return true
-			}
-
-			const tool = JSON.parse(message.text)
-
-			return [
-				"editedExistingFile",
-				"appliedDiff",
-				"newFileCreated",
-				"searchAndReplace",
-				"insertContent",
-			].includes(tool.tool)
-		}
-
-		return false
-	}, [])
-
-	const isMcpToolAlwaysAllowed = useCallback(
-		(message: ClineMessage | undefined) => {
-			if (message?.type === "ask" && message.ask === "use_mcp_server") {
-				if (!message.text) {
-					return true
-				}
-
-				const mcpServerUse = JSON.parse(message.text) as { type: string; serverName: string; toolName: string }
-
-				if (mcpServerUse.type === "use_mcp_tool") {
-					const server = mcpServers?.find((s: McpServer) => s.name === mcpServerUse.serverName)
-					const tool = server?.tools?.find((t: McpTool) => t.name === mcpServerUse.toolName)
-					return tool?.alwaysAllow || false
-				}
-			}
-
-			return false
-		},
-		[mcpServers],
-	)
-
-	// Get the command decision using unified validation logic
-	const getCommandDecisionForMessage = useCallback(
-		(message: ClineMessage | undefined): CommandDecision => {
-			if (message?.type !== "ask") return "ask_user"
-			return getCommandDecision(message.text || "", allowedCommands || [], deniedCommands || [])
-		},
-		[allowedCommands, deniedCommands],
-	)
-
-	// Check if a command message should be auto-approved.
-	const isAllowedCommand = useCallback(
-		(message: ClineMessage | undefined): boolean => {
-			return getCommandDecisionForMessage(message) === "auto_approve"
-		},
-		[getCommandDecisionForMessage],
-	)
-
-	// Check if a command message should be auto-denied.
-	const isDeniedCommand = useCallback(
-		(message: ClineMessage | undefined): boolean => {
-			return getCommandDecisionForMessage(message) === "auto_deny"
-		},
-		[getCommandDecisionForMessage],
-	)
-
-	// Helper function to get the denied prefix for a command
-	const getDeniedPrefix = useCallback(
-		(command: string): string | null => {
-			if (!command || !deniedCommands?.length) return null
-
-			// Parse the command into sub-commands and check each one
-			const subCommands = parseCommand(command)
-			for (const cmd of subCommands) {
-				const deniedMatch = findLongestPrefixMatch(cmd, deniedCommands)
-				if (deniedMatch) {
-					return deniedMatch
-				}
-			}
-			return null
-		},
-		[deniedCommands],
-	)
-
-	// Create toggles object for useAutoApprovalState hook
-	const autoApprovalToggles = useAutoApprovalToggles()
-
-	const { hasEnabledOptions } = useAutoApprovalState(autoApprovalToggles, autoApprovalEnabled)
-
-	const isAutoApproved = useCallback(
-		(message: ClineMessage | undefined) => {
-			// First check if auto-approval is enabled AND we have at least one permission
-			if (!autoApprovalEnabled || !message || message.type !== "ask") {
-				return false
-			}
-
-			// Use the hook's result instead of duplicating the logic
-			if (!hasEnabledOptions) {
-				return false
-			}
-
-			if (message.ask === "followup") {
-				return alwaysAllowFollowupQuestions
-			}
-
-			if (message.ask === "browser_action_launch") {
-				return alwaysAllowBrowser
-			}
-
-			if (message.ask === "use_mcp_server") {
-				return alwaysAllowMcp && isMcpToolAlwaysAllowed(message)
-			}
-
-			if (message.ask === "command") {
-				return alwaysAllowExecute && isAllowedCommand(message)
-			}
-
-			// For read/write operations, check if it's outside workspace and if
-			// we have permission for that.
-			if (message.ask === "tool") {
-				let tool: any = {}
-
-				try {
-					tool = JSON.parse(message.text || "{}")
-				} catch (error) {
-					console.error("Failed to parse tool:", error)
-				}
-
-				if (!tool) {
-					return false
-				}
-
-				if (tool?.tool === "updateTodoList") {
-					return alwaysAllowUpdateTodoList
-				}
-
-				if (tool?.tool === "fetchInstructions") {
-					if (tool.content === "create_mode") {
-						return alwaysAllowModeSwitch
-					}
-
-					if (tool.content === "create_mcp_server") {
-						return alwaysAllowMcp
-					}
-				}
-
-				if (tool?.tool === "switchMode") {
-					return alwaysAllowModeSwitch
-				}
-
-				if (["newTask", "finishTask"].includes(tool?.tool)) {
-					return alwaysAllowSubtasks
-				}
-
-				const isOutsideWorkspace = !!tool.isOutsideWorkspace
-				const isProtected = message.isProtected
-
-				if (isReadOnlyToolAction(message)) {
-					return alwaysAllowReadOnly && (!isOutsideWorkspace || alwaysAllowReadOnlyOutsideWorkspace)
-				}
-
-				if (isWriteToolAction(message)) {
-					return (
-						alwaysAllowWrite &&
-						(!isOutsideWorkspace || alwaysAllowWriteOutsideWorkspace) &&
-						(!isProtected || alwaysAllowWriteProtected)
-					)
-				}
-			}
-
-			return false
-		},
-		[
-			autoApprovalEnabled,
-			hasEnabledOptions,
-			alwaysAllowBrowser,
-			alwaysAllowReadOnly,
-			alwaysAllowReadOnlyOutsideWorkspace,
-			isReadOnlyToolAction,
-			alwaysAllowWrite,
-			alwaysAllowWriteOutsideWorkspace,
-			alwaysAllowWriteProtected,
-			isWriteToolAction,
-			alwaysAllowExecute,
-			isAllowedCommand,
-			alwaysAllowMcp,
-			isMcpToolAlwaysAllowed,
-			alwaysAllowModeSwitch,
-			alwaysAllowFollowupQuestions,
-			alwaysAllowSubtasks,
-			alwaysAllowUpdateTodoList,
-		],
-	)
-
 	useEffect(() => {
 		// This ensures the first message is not read, future user messages are
 		// labeled as `user_feedback`.
@@ -1256,99 +962,56 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 
 		// Update previous value.
 		setWasStreaming(isStreaming)
-	}, [isStreaming, lastMessage, wasStreaming, isAutoApproved, messages.length])
+	}, [isStreaming, lastMessage, wasStreaming, messages.length])
 
-	const isBrowserSessionMessage = (message: ClineMessage): boolean => {
-		// Which of visible messages are browser session messages, see above.
-		if (message.type === "ask") {
-			return ["browser_action_launch"].includes(message.ask!)
+	// Compute current browser session messages for the top banner (not grouped into chat stream)
+	// Find the FIRST browser session from the beginning to show ALL sessions
+	const browserSessionStartIndex = useMemo(() => {
+		for (let i = 0; i < messages.length; i++) {
+			if (messages[i].ask === "browser_action_launch") {
+				return i
+			}
 		}
+		return -1
+	}, [messages])
 
-		if (message.type === "say") {
-			return ["api_req_started", "text", "browser_action", "browser_action_result"].includes(message.say!)
+	const _browserSessionMessages = useMemo<ClineMessage[]>(() => {
+		if (browserSessionStartIndex === -1) return []
+		return messages.slice(browserSessionStartIndex)
+	}, [browserSessionStartIndex, messages])
+
+	// Show globe toggle only when in a task that has a browser session (active or inactive)
+	const showBrowserDockToggle = useMemo(
+		() => Boolean(task && (browserSessionStartIndex !== -1 || isBrowserSessionActive)),
+		[task, browserSessionStartIndex, isBrowserSessionActive],
+	)
+
+	const isBrowserSessionMessage = useCallback((message: ClineMessage): boolean => {
+		// Only the launch ask should be hidden from chat (it's shown in the drawer header)
+		if (message.type === "ask" && message.ask === "browser_action_launch") {
+			return true
 		}
-
+		// browser_action_result messages are paired with browser_action and should not appear independently
+		if (message.type === "say" && message.say === "browser_action_result") {
+			return true
+		}
 		return false
-	}
+	}, [])
 
 	const groupedMessages = useMemo(() => {
-		const result: (ClineMessage | ClineMessage[])[] = []
-		let currentGroup: ClineMessage[] = []
-		let isInBrowserSession = false
-
-		const endBrowserSession = () => {
-			if (currentGroup.length > 0) {
-				result.push([...currentGroup])
-				currentGroup = []
-				isInBrowserSession = false
-			}
-		}
-
-		visibleMessages.forEach((message: ClineMessage) => {
-			if (message.ask === "browser_action_launch") {
-				// Complete existing browser session if any.
-				endBrowserSession()
-				// Start new.
-				isInBrowserSession = true
-				currentGroup.push(message)
-			} else if (isInBrowserSession) {
-				// End session if `api_req_started` is cancelled.
-
-				if (message.say === "api_req_started") {
-					// Get last `api_req_started` in currentGroup to check if
-					// it's cancelled. If it is then this api req is not part
-					// of the current browser session.
-					const lastApiReqStarted = [...currentGroup].reverse().find((m) => m.say === "api_req_started")
-
-					if (lastApiReqStarted?.text !== null && lastApiReqStarted?.text !== undefined) {
-						const info = JSON.parse(lastApiReqStarted.text)
-						const isCancelled = info.cancelReason !== null && info.cancelReason !== undefined
-
-						if (isCancelled) {
-							endBrowserSession()
-							result.push(message)
-							return
-						}
-					}
-				}
-
-				if (isBrowserSessionMessage(message)) {
-					currentGroup.push(message)
-
-					// Check if this is a close action
-					if (message.say === "browser_action") {
-						const browserAction = JSON.parse(message.text || "{}") as ClineSayBrowserAction
-						if (browserAction.action === "close") {
-							endBrowserSession()
-						}
-					}
-				} else {
-					// complete existing browser session if any
-					endBrowserSession()
-					result.push(message)
-				}
-			} else {
-				result.push(message)
-			}
-		})
-
-		// Handle case where browser session is the last group
-		if (currentGroup.length > 0) {
-			result.push([...currentGroup])
-		}
+		// Only filter out the launch ask and result messages - browser actions appear in chat
+		const result: ClineMessage[] = visibleMessages.filter((msg) => !isBrowserSessionMessage(msg))
 
 		if (isCondensing) {
-			// Show indicator after clicking condense button
 			result.push({
 				type: "say",
 				say: "condense_context",
 				ts: Date.now(),
 				partial: true,
-			})
+			} as any)
 		}
-
 		return result
-	}, [isCondensing, visibleMessages])
+	}, [isCondensing, visibleMessages, isBrowserSessionMessage])
 
 	// scrolling
 
@@ -1433,40 +1096,22 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 
 	useEvent("wheel", handleWheel, window, { passive: true }) // passive improves scrolling performance
 
-	// Effect to handle showing the checkpoint warning after a delay
+	// Effect to clear checkpoint warning when messages appear or task changes
 	useEffect(() => {
-		// Only show the warning when there's a task but no visible messages yet
-		if (task && modifiedMessages.length === 0 && !isStreaming && !isHidden) {
-			const timer = setTimeout(() => {
-				setShowCheckpointWarning(true)
-			}, 5000) // 5 seconds
-
-			return () => clearTimeout(timer)
-		} else {
-			setShowCheckpointWarning(false)
+		if (isHidden || !task) {
+			setCheckpointWarning(undefined)
 		}
-	}, [task, modifiedMessages.length, isStreaming, isHidden])
-
-	// Effect to hide the checkpoint warning when messages appear
-	useEffect(() => {
-		if (modifiedMessages.length > 0 || isStreaming || isHidden) {
-			setShowCheckpointWarning(false)
-		}
-	}, [modifiedMessages.length, isStreaming, isHidden])
+	}, [modifiedMessages.length, isStreaming, isHidden, task])
 
 	const placeholderText = task ? t("chat:typeMessage") : t("chat:typeTask")
 
-	// Function to switch to a specific mode
 	const switchToMode = useCallback(
 		(modeSlug: string): void => {
-			// Update local state and notify extension to sync mode change
+			// Update local state and notify extension to sync mode change.
 			setMode(modeSlug)
 
-			// Send the mode switch message
-			vscode.postMessage({
-				type: "mode",
-				text: modeSlug,
-			})
+			// Send the mode switch message.
+			vscode.postMessage({ type: "mode", text: modeSlug })
 		},
 		[setMode],
 	)
@@ -1515,32 +1160,36 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 		vscode.postMessage({ type: "askResponse", askResponse: "objectResponse", text: JSON.stringify(response) })
 	}, [])
 
-	// Handler for when FollowUpSuggest component unmounts
-	const handleFollowUpUnmount = useCallback(() => {
-		// Mark that user has responded
-		userRespondedRef.current = true
-	}, [])
-
 	const itemContent = useCallback(
-		(index: number, messageOrGroup: ClineMessage | ClineMessage[]) => {
-			// browser session group
-			if (Array.isArray(messageOrGroup)) {
+		(index: number, messageOrGroup: ClineMessage) => {
+			const hasCheckpoint = modifiedMessages.some((message) => message.say === "checkpoint_saved")
+
+			// Check if this is a browser action message
+			if (messageOrGroup.type === "say" && messageOrGroup.say === "browser_action") {
+				// Find the corresponding result message by looking for the next browser_action_result after this action's timestamp
+				const nextMessage = modifiedMessages.find(
+					(m) => m.ts > messageOrGroup.ts && m.say === "browser_action_result",
+				)
+
+				// Calculate action index and total count
+				const browserActions = modifiedMessages.filter((m) => m.say === "browser_action")
+				const actionIndex = browserActions.findIndex((m) => m.ts === messageOrGroup.ts) + 1
+				const totalActions = browserActions.length
+
 				return (
-					<BrowserSessionRow
-						messages={messageOrGroup}
-						isLast={index === groupedMessages.length - 1}
-						lastModifiedMessage={modifiedMessages.at(-1)}
-						onHeightChange={handleRowHeightChange}
-						isStreaming={isStreaming}
-						isExpanded={(messageTs: number) => expandedRows[messageTs] ?? false}
-						onToggleExpand={(messageTs: number) => {
-							setExpandedRows((prev: Record<number, boolean>) => ({
-								...prev,
-								[messageTs]: !prev[messageTs],
-							}))
-						}}
+					<BrowserActionRow
+						key={messageOrGroup.ts}
+						message={messageOrGroup}
+						nextMessage={nextMessage}
+						actionIndex={actionIndex}
+						totalActions={totalActions}
 					/>
 				)
+			}
+
+			// Check if this is a browser session status message
+			if (messageOrGroup.type === "say" && messageOrGroup.say === "browser_session_status") {
+				return <BrowserSessionStatusRow key={messageOrGroup.ts} message={messageOrGroup} />
 			}
 
 			// regular message
@@ -1556,8 +1205,7 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 					isStreaming={isStreaming}
 					onSuggestionClick={handleSuggestionClickInRow} // This was already stabilized
 					onBatchFileResponse={handleBatchFileResponse}
-					onFollowUpUnmount={handleFollowUpUnmount}
-					isFollowUpAnswered={messageOrGroup.ts === currentFollowUpTs}
+					isFollowUpAnswered={messageOrGroup.isAnswered === true || messageOrGroup.ts === currentFollowUpTs}
 					editable={
 						messageOrGroup.type === "ask" &&
 						messageOrGroup.ask === "tool" &&
@@ -1576,6 +1224,7 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 							return tool.tool === "updateTodoList" && enableButtons && !!primaryButtonText
 						})()
 					}
+					hasCheckpoint={hasCheckpoint}
 				/>
 			)
 		},
@@ -1588,139 +1237,12 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 			isStreaming,
 			handleSuggestionClickInRow,
 			handleBatchFileResponse,
-			handleFollowUpUnmount,
 			currentFollowUpTs,
 			alwaysAllowUpdateTodoList,
 			enableButtons,
 			primaryButtonText,
 		],
 	)
-
-	useEffect(() => {
-		if (autoApproveTimeoutRef.current) {
-			clearTimeout(autoApproveTimeoutRef.current)
-			autoApproveTimeoutRef.current = null
-		}
-
-		if (!clineAsk || !enableButtons) {
-			return
-		}
-
-		// Exit early if user has already responded
-		if (userRespondedRef.current) {
-			return
-		}
-
-		const autoApproveOrReject = async () => {
-			// Check for auto-reject first (commands that should be denied)
-			if (lastMessage?.ask === "command" && isDeniedCommand(lastMessage)) {
-				// Get the denied prefix for the localized message
-				const deniedPrefix = getDeniedPrefix(lastMessage.text || "")
-				if (deniedPrefix) {
-					// Create the localized auto-deny message and send it with the rejection
-					const autoDenyMessage = tSettings("autoApprove.execute.autoDenied", { prefix: deniedPrefix })
-
-					vscode.postMessage({
-						type: "askResponse",
-						askResponse: "noButtonClicked",
-						text: autoDenyMessage,
-					})
-				} else {
-					// Auto-reject denied commands immediately if no prefix found
-					vscode.postMessage({ type: "askResponse", askResponse: "noButtonClicked" })
-				}
-
-				setSendingDisabled(true)
-				setClineAsk(undefined)
-				setEnableButtons(false)
-				return
-			}
-
-			// Then check for auto-approve
-			if (lastMessage?.ask && isAutoApproved(lastMessage)) {
-				// Special handling for follow-up questions
-				if (lastMessage.ask === "followup") {
-					// Handle invalid JSON
-					let followUpData: FollowUpData = {}
-					try {
-						followUpData = JSON.parse(lastMessage.text || "{}") as FollowUpData
-					} catch (error) {
-						console.error("Failed to parse follow-up data:", error)
-						return
-					}
-
-					if (followUpData && followUpData.suggest && followUpData.suggest.length > 0) {
-						// Wait for the configured timeout before auto-selecting the first suggestion
-						await new Promise<void>((resolve) => {
-							autoApproveTimeoutRef.current = setTimeout(() => {
-								autoApproveTimeoutRef.current = null
-								resolve()
-							}, followupAutoApproveTimeoutMs)
-						})
-
-						// Check if user responded manually
-						if (userRespondedRef.current) {
-							return
-						}
-
-						// Get the first suggestion
-						const firstSuggestion = followUpData.suggest[0]
-
-						// Handle the suggestion click
-						handleSuggestionClickInRow(firstSuggestion)
-						return
-					}
-				} else if (lastMessage.ask === "tool" && isWriteToolAction(lastMessage)) {
-					await new Promise<void>((resolve) => {
-						autoApproveTimeoutRef.current = setTimeout(() => {
-							autoApproveTimeoutRef.current = null
-							resolve()
-						}, writeDelayMs)
-					})
-				}
-
-				vscode.postMessage({ type: "askResponse", askResponse: "yesButtonClicked" })
-
-				setSendingDisabled(true)
-				setClineAsk(undefined)
-				setEnableButtons(false)
-			}
-		}
-		autoApproveOrReject()
-
-		return () => {
-			if (autoApproveTimeoutRef.current) {
-				clearTimeout(autoApproveTimeoutRef.current)
-				autoApproveTimeoutRef.current = null
-			}
-		}
-	}, [
-		clineAsk,
-		enableButtons,
-		handlePrimaryButtonClick,
-		alwaysAllowBrowser,
-		alwaysAllowReadOnly,
-		alwaysAllowReadOnlyOutsideWorkspace,
-		alwaysAllowWrite,
-		alwaysAllowWriteOutsideWorkspace,
-		alwaysAllowExecute,
-		followupAutoApproveTimeoutMs,
-		alwaysAllowMcp,
-		messages,
-		allowedCommands,
-		deniedCommands,
-		mcpServers,
-		isAutoApproved,
-		lastMessage,
-		writeDelayMs,
-		isWriteToolAction,
-		alwaysAllowFollowupQuestions,
-		handleSuggestionClickInRow,
-		isAllowedCommand,
-		isDeniedCommand,
-		getDeniedPrefix,
-		tSettings,
-	])
 
 	// Function to handle mode switching
 	const switchToNextMode = useCallback(() => {
@@ -1760,9 +1282,9 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 		[switchToNextMode, switchToPreviousMode],
 	)
 
-	// Add event listener
 	useEffect(() => {
 		window.addEventListener("keydown", handleKeyDown)
+
 		return () => {
 			window.removeEventListener("keydown", handleKeyDown)
 		}
@@ -1793,6 +1315,7 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 		<div
 			data-testid="chat-view"
 			className={isHidden ? "hidden" : "fixed top-0 left-0 right-0 bottom-0 flex flex-col overflow-hidden"}>
+			{telemetrySetting === "unset" && <TelemetryBanner />}
 			{(showAnnouncement || showAnnouncementModal) && (
 				<Announcement
 					hideAnnouncement={() => {
@@ -1826,91 +1349,68 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 						</div>
 					)}
 
-					{showCheckpointWarning && (
+					{checkpointWarning && (
 						<div className="px-3">
-							<CheckpointWarning />
+							<CheckpointWarning warning={checkpointWarning} />
 						</div>
 					)}
 				</>
 			) : (
-				<div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-4 relative">
-					{/* Moved Task Bar Header Here */}
-					{tasks.length !== 0 && (
-						<div className="flex text-vscode-descriptionForeground w-full mx-auto px-5 pt-3">
-							<div className="flex items-center gap-1 cursor-pointer" onClick={toggleExpanded}>
-								{tasks.length < 10 && (
-									<span className={`font-medium text-xs `}>{t("history:recentTasks")}</span>
-								)}
-								<span
-									className={`codicon  ${isExpanded ? "codicon-eye" : "codicon-eye-closed"} scale-90`}
-								/>
-							</div>
-						</div>
-					)}
-					<div
-						className={` w-full flex flex-col gap-4 m-auto ${isExpanded && tasks.length > 0 ? "mt-0" : ""} px-3.5 min-[370px]:px-10 pt-5 transition-all duration-300`}>
-						{/* Version indicator in top-right corner - only on welcome screen */}
+				<div className="flex flex-col h-full justify-center p-6 min-h-0 overflow-y-auto gap-4 relative">
+					<div className="flex flex-col items-start gap-2 justify-center h-full min-[400px]:px-6">
 						<VersionIndicator
 							onClick={() => setShowAnnouncementModal(true)}
 							className="absolute top-2 right-3 z-10"
 						/>
-
-						<RooHero />
-						{/* {telemetrySetting === "unset" && <TelemetryBanner />} */}
-
-						<div className="mb-2.5">
-							{cloudIsAuthenticated || taskHistory.length < 4 ? <RooTips /> : <RooCloudCTA />}
+						<div className="flex flex-col gap-4 w-full">
+							<RooHero />
+							{/* Show RooTips when authenticated or when user is new */}
+							{taskHistory.length < 6 && <RooTips />}
+							{/* Everyone should see their task history if any */}
+							{taskHistory.length > 0 && <HistoryPreview />}
 						</div>
-						{/* Show the task history preview if expanded and tasks exist */}
-						{taskHistory.length > 0 && isExpanded && <HistoryPreview />}
+						{/* Logged out users should see a one-time upsell, but not for brand new users */}
+						{!cloudIsAuthenticated && taskHistory.length >= 6 && (
+							<DismissibleUpsell
+								upsellId="taskList2"
+								icon={<Cloud className="size-5 mt-0.5 shrink-0" />}
+								onClick={() => openUpsell()}
+								dismissOnClick={false}
+								className="!bg-vscode-editor-background mt-6 border-border rounded-xl pl-4 pr-3 py-3 !text-base">
+								<Trans
+									i18nKey="cloud:upsell.taskList"
+									components={{
+										learnMoreLink: <VSCodeLink href="#" />,
+									}}
+								/>
+							</DismissibleUpsell>
+						)}
 					</div>
-				</div>
-			)}
-
-			{/* 
-			// Flex layout explanation:
-			// 1. Content div above uses flex: "1 1 0" to:
-			//    - Grow to fill available space (flex-grow: 1) 
-			//    - Shrink when AutoApproveMenu needs space (flex-shrink: 1)
-			//    - Start from zero size (flex-basis: 0) to ensure proper distribution
-			//    minHeight: 0 allows it to shrink below its content height
-			//
-			// 2. AutoApproveMenu uses flex: "0 1 auto" to:
-			//    - Not grow beyond its content (flex-grow: 0)
-			//    - Shrink when viewport is small (flex-shrink: 1) 
-			//    - Use its content size as basis (flex-basis: auto)
-			//    This ensures it takes its natural height when there's space
-			//    but becomes scrollable when the viewport is too small
-			*/}
-			{!task && (
-				<div className="mb-1 flex-initial min-h-0">
-					<AutoApproveMenu />
 				</div>
 			)}
 
 			{task && (
 				<>
-					<div className="grow flex" ref={scrollContainerRef}>
-						<Virtuoso
-							ref={virtuosoRef}
-							key={task.ts}
-							className="scrollable grow overflow-y-scroll mb-1"
-							increaseViewportBy={{ top: 3_000, bottom: 1000 }}
-							data={groupedMessages}
-							itemContent={itemContent}
-							atBottomStateChange={(isAtBottom: boolean) => {
-								setIsAtBottom(isAtBottom)
-								if (isAtBottom) {
-									disableAutoScrollRef.current = false
-								}
-								setShowScrollToBottom(disableAutoScrollRef.current && !isAtBottom)
-							}}
-							atBottomThreshold={10}
-							initialTopMostItemIndex={groupedMessages.length - 1}
-						/>
-					</div>
-					<div className={`flex-initial min-h-0 ${!areButtonsVisible ? "mb-1" : ""}`}>
-						<AutoApproveMenu />
+					<div className="grow flex flex-col min-h-0" ref={scrollContainerRef}>
+						<div className="flex-auto min-h-0">
+							<Virtuoso
+								ref={virtuosoRef}
+								key={task.ts}
+								className="h-full overflow-y-auto mb-1"
+								increaseViewportBy={{ top: 3_000, bottom: 1000 }}
+								data={groupedMessages}
+								itemContent={itemContent}
+								atBottomStateChange={(isAtBottom: boolean) => {
+									setIsAtBottom(isAtBottom)
+									if (isAtBottom) {
+										disableAutoScrollRef.current = false
+									}
+									setShowScrollToBottom(disableAutoScrollRef.current && !isAtBottom)
+								}}
+								atBottomThreshold={10}
+								initialTopMostItemIndex={groupedMessages.length - 1}
+							/>
+						</div>
 					</div>
 					{areButtonsVisible && (
 						<div
@@ -1923,15 +1423,15 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 							}`}>
 							{showScrollToBottom ? (
 								<StandardTooltip content={t("chat:scrollToBottom")}>
-									<VSCodeButton
-										appearance="secondary"
+									<Button
+										variant="secondary"
 										className="flex-[2]"
 										onClick={() => {
 											scrollToBottomSmooth()
 											disableAutoScrollRef.current = false
 										}}>
 										<span className="codicon codicon-chevron-down"></span>
-									</VSCodeButton>
+									</Button>
 								</StandardTooltip>
 							) : (
 								<>
@@ -1958,13 +1458,13 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 																				? t("chat:proceedWhileRunning.tooltip")
 																				: undefined
 											}>
-											<VSCodeButton
-												appearance="primary"
+											<Button
+												variant="primary"
 												disabled={!enableButtons}
 												className={secondaryButtonText ? "flex-1 mr-[6px]" : "flex-[2] mr-0"}
 												onClick={() => handlePrimaryButtonClick(inputValue, selectedImages)}>
 												{primaryButtonText}
-											</VSCodeButton>
+											</Button>
 										</StandardTooltip>
 									)}
 									{(secondaryButtonText || isStreaming) && (
@@ -1980,13 +1480,13 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 																? t("chat:terminate.tooltip")
 																: undefined
 											}>
-											<VSCodeButton
-												appearance="secondary"
+											<Button
+												variant="secondary"
 												disabled={!enableButtons && !(isStreaming && !didClickCancel)}
 												className={isStreaming ? "flex-[2] ml-0" : "flex-1 ml-[6px]"}
 												onClick={() => handleSecondaryButtonClick(inputValue, selectedImages)}>
 												{isStreaming ? t("chat:cancel.title") : secondaryButtonText}
-											</VSCodeButton>
+											</Button>
 										</StandardTooltip>
 									)}
 								</>
@@ -1998,9 +1498,18 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 
 			<QueuedMessages
 				queue={messageQueue}
-				onRemove={(index) => setMessageQueue((prev) => prev.filter((_, i) => i !== index))}
+				onRemove={(index) => {
+					if (messageQueue[index]) {
+						vscode.postMessage({ type: "removeQueuedMessage", text: messageQueue[index].id })
+					}
+				}}
 				onUpdate={(index, newText) => {
-					setMessageQueue((prev) => prev.map((msg, i) => (i === index ? { ...msg, text: newText } : msg)))
+					if (messageQueue[index]) {
+						vscode.postMessage({
+							type: "editQueuedMessage",
+							payload: { id: messageQueue[index].id, text: newText, images: messageQueue[index].images },
+						})
+					}
 				}}
 			/>
 			<ChatTextArea
@@ -2023,6 +1532,8 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 				mode={mode}
 				setMode={setMode}
 				modeShortcutText={modeShortcutText}
+				isBrowserSessionActive={!!isBrowserSessionActive}
+				showBrowserDockToggle={showBrowserDockToggle}
 			/>
 
 			{isProfileDisabled && (
@@ -2032,6 +1543,7 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 			)}
 
 			<div id="roo-portal" />
+			<CloudUpsellDialog open={isUpsellOpen} onOpenChange={closeUpsell} onConnect={handleConnect} />
 		</div>
 	)
 }

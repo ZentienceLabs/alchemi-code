@@ -1,7 +1,7 @@
+import { ProviderSettings } from "@roo-code/types"
+
 import { Task } from "../Task"
 import { ClineProvider } from "../../webview/ClineProvider"
-import { ProviderSettings } from "@roo-code/types"
-import { vi, describe, test, expect, beforeEach, afterEach } from "vitest"
 
 // Mock dependencies
 vi.mock("../../webview/ClineProvider")
@@ -22,7 +22,6 @@ vi.mock("../../../api", () => ({
 		getModel: () => ({ info: {}, id: "test-model" }),
 	})),
 }))
-vi.mock("./AutoApprovalHandler")
 
 // Mock TelemetryService
 vi.mock("@roo-code/telemetry", () => ({
@@ -134,7 +133,7 @@ describe("Task dispose method", () => {
 
 		// Verify dispose was called and logged
 		expect(consoleLogSpy).toHaveBeenCalledWith(
-			expect.stringContaining(`[Task] disposing task ${task.taskId}.${task.instanceId}`),
+			expect.stringContaining(`[Task#dispose] disposing task ${task.taskId}.${task.instanceId}`),
 		)
 
 		// Verify removeAllListeners was called first (before other cleanup)

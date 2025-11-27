@@ -24,7 +24,9 @@
 		"connectToCloudDescription": "Entre no Alchemi Code Cloud para compartilhar tarefas",
 		"sharingDisabledByOrganization": "Compartilhamento desabilitado pela organização",
 		"shareSuccessOrganization": "Link da organização copiado para a área de transferência",
-		"shareSuccessPublic": "Link público copiado para a área de transferência"
+		"shareSuccessPublic": "Link público copiado para a área de transferência",
+		"openInCloud": "Abrir tarefa no Alchemi Code Cloud",
+		"openInCloudIntro": "Continue monitorando ou interagindo com Alchemi de qualquer lugar. Escaneie, clique ou copie para abrir."
 	},
 	"unpin": "Desfixar",
 	"pin": "Fixar",
@@ -59,7 +61,7 @@
 		"tooltip": "Aprovar esta ação"
 	},
 	"runCommand": {
-		"title": "Executar comando",
+		"title": "Comando",
 		"tooltip": "Executar este comando"
 	},
 	"proceedWhileRunning": {
@@ -83,24 +85,17 @@
 		"tooltip": "Cancelar a operação atual"
 	},
 	"scrollToBottom": "Rolar para o final do chat",
-	"about": "Gere, refatore e depure código com assistência de IA. Confira nossa <DocsLink>documentação</DocsLink> para saber mais.",
-	"onboarding": "<strong>Sua lista de tarefas neste espaço de trabalho está vazia.</strong> Comece digitando uma tarefa abaixo. Não sabe como começar? Leia mais sobre o que o Alchemi pode fazer por você nos <DocsLink>documentos</DocsLink>.",
+	"about": "Alchemi Code é uma equipe inteira de desenvolvimento de IA em seu editor.",
+	"docs": "Confira nossa <DocsLink>documentação</DocsLink> para saber mais.",
+	"onboarding": "Sua lista de tarefas neste espaço de trabalho está vazia.",
 	"rooTips": {
-		"boomerangTasks": {
-			"title": "Orquestração de Tarefas",
-			"description": "Divida as tarefas em partes menores e gerenciáveis."
-		},
-		"stickyModels": {
-			"title": "Modos Fixos",
-			"description": "Cada modo lembra o seu último modelo usado"
-		},
-		"tools": {
-			"title": "Ferramentas",
-			"description": "Permita que a IA resolva problemas navegando na web, executando comandos e muito mais."
-		},
 		"customizableModes": {
 			"title": "Modos personalizáveis",
-			"description": "Personas especializadas com comportamentos próprios e modelos atribuídos"
+			"description": "Personas especializadas que mantêm o foco na tarefa e entregam resultados."
+		},
+		"modelAgnostic": {
+			"title": "Traga seu próprio modelo",
+			"description": "Use sua própria chave de provedor ou até mesmo execute inferência local — sem acréscimos, sem aprisionamento, sem restrições"
 		}
 	},
 	"selectMode": "Selecionar modo de interação",
@@ -119,11 +114,11 @@
 		"title": "Modos",
 		"marketplace": "Marketplace de Modos",
 		"settings": "Configurações de Modos",
-		"description": "Personas especializadas que adaptam o comportamento do Roo.",
+		"description": "Personas especializadas que adaptam o comportamento do Alchemi.",
 		"searchPlaceholder": "Pesquisar modos...",
 		"noResults": "Nenhum resultado encontrado"
 	},
-	"errorReadingFile": "Erro ao ler arquivo:",
+	"errorReadingFile": "Erro ao ler arquivo",
 	"noValidImages": "Nenhuma imagem válida foi processada",
 	"separator": "Separador",
 	"edit": "Editar...",
@@ -146,6 +141,9 @@
 		"initializingWarning": "Ainda inicializando ponto de verificação... Se isso demorar muito, você pode desativar os pontos de verificação nas <settingsLink>configurações</settingsLink> e reiniciar sua tarefa.",
 		"menu": {
 			"viewDiff": "Ver diferenças",
+			"more": "Mais opções",
+			"viewDiffFromInit": "Ver todas as alterações",
+			"viewDiffWithCurrent": "Ver alterações desde este ponto de verificação",
 			"restore": "Restaurar ponto de verificação",
 			"restoreFiles": "Restaurar arquivos",
 			"restoreFilesDescription": "Restaura os arquivos do seu projeto para um snapshot feito neste ponto.",
@@ -161,47 +159,51 @@
 		"wantsToFetch": "Alchemi quer buscar instruções detalhadas para ajudar com a tarefa atual"
 	},
 	"fileOperations": {
-		"wantsToRead": "Alchemi quer ler este arquivo:",
-		"wantsToReadOutsideWorkspace": "Alchemi quer ler este arquivo fora do espaço de trabalho:",
-		"didRead": "Alchemi leu este arquivo:",
-		"wantsToEdit": "Alchemi quer editar este arquivo:",
-		"wantsToEditOutsideWorkspace": "Alchemi quer editar este arquivo fora do espaço de trabalho:",
-		"wantsToEditProtected": "Alchemi quer editar um arquivo de configuração protegido:",
-		"wantsToCreate": "Alchemi quer criar um novo arquivo:",
-		"wantsToSearchReplace": "Alchemi quer realizar busca e substituição neste arquivo:",
-		"didSearchReplace": "Alchemi realizou busca e substituição neste arquivo:",
-		"wantsToInsert": "Alchemi quer inserir conteúdo neste arquivo:",
-		"wantsToInsertWithLineNumber": "Alchemi quer inserir conteúdo neste arquivo na linha {{lineNumber}}:",
-		"wantsToInsertAtEnd": "Alchemi quer adicionar conteúdo ao final deste arquivo:",
-		"wantsToReadAndXMore": "Alchemi quer ler este arquivo e mais {{count}}:",
-		"wantsToReadMultiple": "Alchemi deseja ler múltiplos arquivos:",
-		"wantsToApplyBatchChanges": "Alchemi quer aplicar alterações a múltiplos arquivos:"
+		"wantsToRead": "Alchemi quer ler este arquivo",
+		"wantsToReadOutsideWorkspace": "Alchemi quer ler este arquivo fora do espaço de trabalho",
+		"didRead": "Alchemi leu este arquivo",
+		"wantsToEdit": "Alchemi quer editar este arquivo",
+		"wantsToEditOutsideWorkspace": "Alchemi quer editar este arquivo fora do espaço de trabalho",
+		"wantsToEditProtected": "Alchemi quer editar um arquivo de configuração protegido",
+		"wantsToCreate": "Alchemi quer criar um novo arquivo",
+		"wantsToSearchReplace": "Alchemi quer realizar busca e substituição neste arquivo",
+		"didSearchReplace": "Alchemi realizou busca e substituição neste arquivo",
+		"wantsToInsert": "Alchemi quer inserir conteúdo neste arquivo",
+		"wantsToInsertWithLineNumber": "Alchemi quer inserir conteúdo neste arquivo na linha {{lineNumber}}",
+		"wantsToInsertAtEnd": "Alchemi quer adicionar conteúdo ao final deste arquivo",
+		"wantsToReadAndXMore": "Alchemi quer ler este arquivo e mais {{count}}",
+		"wantsToReadMultiple": "Alchemi deseja ler múltiplos arquivos",
+		"wantsToApplyBatchChanges": "Alchemi quer aplicar alterações a múltiplos arquivos",
+		"wantsToGenerateImage": "Alchemi quer gerar uma imagem",
+		"wantsToGenerateImageOutsideWorkspace": "Alchemi quer gerar uma imagem fora do espaço de trabalho",
+		"wantsToGenerateImageProtected": "Alchemi quer gerar uma imagem em um local protegido",
+		"didGenerateImage": "Alchemi gerou uma imagem"
 	},
 	"directoryOperations": {
-		"wantsToViewTopLevel": "Alchemi quer visualizar os arquivos de nível superior neste diretório:",
-		"didViewTopLevel": "Alchemi visualizou os arquivos de nível superior neste diretório:",
-		"wantsToViewRecursive": "Alchemi quer visualizar recursivamente todos os arquivos neste diretório:",
-		"didViewRecursive": "Alchemi visualizou recursivamente todos os arquivos neste diretório:",
-		"wantsToViewDefinitions": "Alchemi quer visualizar nomes de definição de código-fonte usados neste diretório:",
-		"didViewDefinitions": "Alchemi visualizou nomes de definição de código-fonte usados neste diretório:",
-		"wantsToSearch": "Alchemi quer pesquisar neste diretório por <code>{{regex}}</code>:",
-		"didSearch": "Alchemi pesquisou neste diretório por <code>{{regex}}</code>:",
-		"wantsToSearchOutsideWorkspace": "Alchemi quer pesquisar neste diretório (fora do espaço de trabalho) por <code>{{regex}}</code>:",
-		"didSearchOutsideWorkspace": "Alchemi pesquisou neste diretório (fora do espaço de trabalho) por <code>{{regex}}</code>:",
-		"wantsToViewTopLevelOutsideWorkspace": "Alchemi quer visualizar os arquivos de nível superior neste diretório (fora do espaço de trabalho):",
-		"didViewTopLevelOutsideWorkspace": "Alchemi visualizou os arquivos de nível superior neste diretório (fora do espaço de trabalho):",
-		"wantsToViewRecursiveOutsideWorkspace": "Alchemi quer visualizar recursivamente todos os arquivos neste diretório (fora do espaço de trabalho):",
-		"didViewRecursiveOutsideWorkspace": "Alchemi visualizou recursivamente todos os arquivos neste diretório (fora do espaço de trabalho):",
-		"wantsToViewDefinitionsOutsideWorkspace": "Alchemi quer visualizar nomes de definição de código-fonte usados neste diretório (fora do espaço de trabalho):",
-		"didViewDefinitionsOutsideWorkspace": "Alchemi visualizou nomes de definição de código-fonte usados neste diretório (fora do espaço de trabalho):"
+		"wantsToViewTopLevel": "Alchemi quer visualizar os arquivos de nível superior neste diretório",
+		"didViewTopLevel": "Alchemi visualizou os arquivos de nível superior neste diretório",
+		"wantsToViewRecursive": "Alchemi quer visualizar recursivamente todos os arquivos neste diretório",
+		"didViewRecursive": "Alchemi visualizou recursivamente todos os arquivos neste diretório",
+		"wantsToViewDefinitions": "Alchemi quer visualizar nomes de definição de código-fonte usados neste diretório",
+		"didViewDefinitions": "Alchemi visualizou nomes de definição de código-fonte usados neste diretório",
+		"wantsToSearch": "Alchemi quer pesquisar neste diretório por <code>{{regex}}</code>",
+		"didSearch": "Alchemi pesquisou neste diretório por <code>{{regex}}</code>",
+		"wantsToSearchOutsideWorkspace": "Alchemi quer pesquisar neste diretório (fora do espaço de trabalho) por <code>{{regex}}</code>",
+		"didSearchOutsideWorkspace": "Alchemi pesquisou neste diretório (fora do espaço de trabalho) por <code>{{regex}}</code>",
+		"wantsToViewTopLevelOutsideWorkspace": "Alchemi quer visualizar os arquivos de nível superior neste diretório (fora do espaço de trabalho)",
+		"didViewTopLevelOutsideWorkspace": "Alchemi visualizou os arquivos de nível superior neste diretório (fora do espaço de trabalho)",
+		"wantsToViewRecursiveOutsideWorkspace": "Alchemi quer visualizar recursivamente todos os arquivos neste diretório (fora do espaço de trabalho)",
+		"didViewRecursiveOutsideWorkspace": "Alchemi visualizou recursivamente todos os arquivos neste diretório (fora do espaço de trabalho)",
+		"wantsToViewDefinitionsOutsideWorkspace": "Alchemi quer visualizar nomes de definição de código-fonte usados neste diretório (fora do espaço de trabalho)",
+		"didViewDefinitionsOutsideWorkspace": "Alchemi visualizou nomes de definição de código-fonte usados neste diretório (fora do espaço de trabalho)"
 	},
 	"commandOutput": "Saída do comando",
 	"commandExecution": {
 		"running": "Executando",
+		"abort": "Interromper",
 		"pid": "PID: {{pid}}",
-		"exited": "Encerrado ({{exitCode}})",
-		"manageCommands": "Gerenciar Permissões de Comando",
-		"commandManagementDescription": "Gerencie as permissões de comando: Clique em ✓ para permitir a execução automática, ✗ para negar a execução. Os padrões podem ser ativados/desativados ou removidos das listas. <settingsLink>Ver todas as configurações</settingsLink>",
+		"exitStatus": "Saiu com o status {{exitCode}}",
+		"manageCommands": "Comandos aprovados automaticamente",
 		"addToAllowed": "Adicionar à lista de permitidos",
 		"removeFromAllowed": "Remover da lista de permitidos",
 		"addToDenied": "Adicionar à lista de negados",
@@ -214,9 +216,15 @@
 	},
 	"response": "Resposta",
 	"arguments": "Argumentos",
+	"text": {
+		"rooSaid": "Alchemi disse"
+	},
+	"feedback": {
+		"youSaid": "Você disse"
+	},
 	"mcp": {
-		"wantsToUseTool": "Alchemi quer usar uma ferramenta no servidor MCP {{serverName}}:",
-		"wantsToAccessResource": "Alchemi quer acessar um recurso no servidor MCP {{serverName}}:"
+		"wantsToUseTool": "Alchemi quer usar uma ferramenta no servidor MCP {{serverName}}",
+		"wantsToAccessResource": "Alchemi quer acessar um recurso no servidor MCP {{serverName}}"
 	},
 	"modes": {
 		"wantsToSwitch": "Alchemi quer mudar para o modo <code>{{mode}}</code>",
@@ -225,7 +233,7 @@
 		"didSwitchWithReason": "Alchemi mudou para o modo <code>{{mode}}</code> porque: {{reason}}"
 	},
 	"subtasks": {
-		"wantsToCreate": "Alchemi quer criar uma nova subtarefa no modo <code>{{mode}}</code>:",
+		"wantsToCreate": "Alchemi quer criar uma nova subtarefa no modo <code>{{mode}}</code>",
 		"wantsToFinish": "Alchemi quer finalizar esta subtarefa",
 		"newTaskContent": "Instruções da subtarefa",
 		"completionContent": "Subtarefa concluída",
@@ -234,19 +242,29 @@
 		"completionInstructions": "Subtarefa concluída! Você pode revisar os resultados e sugerir correções ou próximos passos. Se tudo parecer bom, confirme para retornar o resultado à tarefa principal."
 	},
 	"questions": {
-		"hasQuestion": "Alchemi tem uma pergunta:"
+		"hasQuestion": "Alchemi tem uma pergunta"
 	},
 	"taskCompleted": "Tarefa concluída",
 	"powershell": {
 		"issues": "Parece que você está tendo problemas com o Windows PowerShell, por favor veja este"
 	},
 	"autoApprove": {
-		"title": "Aprovação automática:",
-		"none": "Nenhuma",
-		"description": "A aprovação automática permite que o Alchemi Code execute ações sem pedir permissão. Ative apenas para ações nas quais você confia totalmente. Configuração mais detalhada disponível nas <settingsLink>Configurações</settingsLink>.",
+		"tooltipManage": "Gerenciar configurações de aprovação automática",
+		"tooltipStatus": "Aprovação automática habilitada para: {{toggles}}",
+		"title": "Aprovação automática",
+		"toggle": "Alternar aprovação automática",
+		"all": "Todos",
+		"none": "Nenhum",
+		"description": "Execute estas ações sem pedir permissão. Ative isso apenas para ações em que você confia totalmente.",
 		"selectOptionsFirst": "Selecione pelo menos uma opção abaixo para ativar a aprovação automática",
 		"toggleAriaLabel": "Alternar aprovação automática",
-		"disabledAriaLabel": "Aprovação automática desativada - selecione as opções primeiro"
+		"disabledAriaLabel": "Aprovação automática desativada - selecione as opções primeiro",
+		"triggerLabelOff": "Aprovação automática desativada",
+		"triggerLabelOffShort": "Desativada",
+		"triggerLabel_zero": "0 aprovados automaticamente",
+		"triggerLabel_one": "1 aprovado automaticamente",
+		"triggerLabel_other": "{{count}} aprovados automaticamente",
+		"triggerLabelAll": "YOLO"
 	},
 	"reasoning": {
 		"thinking": "Pensando",
@@ -266,21 +284,29 @@
 	"announcement": {
 		"title": "🎉 Alchemi Code {{version}} Lançado",
 		"stealthModel": {
-			"feature": "<bold>Modelo stealth GRATUITO por tempo limitado</bold> - Um modelo de raciocínio ultrarrápido que se destaca em codificação agêntica com uma janela de contexto de 262k, disponível através do Alchemi Code Cloud.",
+			"feature": "<bold>Modelo stealth GRATUITO por tempo limitado</bold> - Code Supernova: Agora atualizado com uma <bold>janela de contexto de 1M tokens</bold>! Um modelo de codificação agêntica versátil que suporta entradas de imagem, acessível através do Alchemi Code Cloud.",
 			"note": "(Nota: prompts e completações são registrados pelo criador do modelo e usados para melhorá-lo)",
 			"connectButton": "Conectar ao Alchemi Code Cloud",
-			"selectModel": "Selecione <code>roo/sonic</code> do provedor Alchemi Code Cloud em<br/><settingsLink>Configurações</settingsLink> para começar"
+			"selectModel": "Selecione <code>roo/code-supernova</code> do provedor Alchemi Code Cloud em Configurações para começar.",
+			"goToSettingsButton": "Ir para Configurações"
 		},
-		"description": "Alchemi Code {{version}} traz novos recursos poderosos e melhorias significativas para aprimorar seu fluxo de trabalho de desenvolvimento.",
-		"whatsNew": "O que há de novo",
-		"feature1": "<bold>Fila de Mensagens</bold>: Coloque várias mensagens na fila enquanto o Alchemi está trabalhando, permitindo que você continue planejando seu fluxo de trabalho sem interrupção.",
-		"feature2": "<bold>Comandos de Barra Personalizados</bold>: Crie comandos de barra personalizados para acesso rápido a prompts e fluxos de trabalho usados frequentemente, com gerenciamento completo da interface do usuário.",
-		"feature3": "<bold>Ferramentas Gemini Aprimoradas</bold>: Novas capacidades de contexto de URL e fundamentação de pesquisa do Google fornecem aos modelos Gemini informações web em tempo real e capacidades de pesquisa aprimoradas.",
-		"hideButton": "Ocultar anúncio",
-		"detailsDiscussLinks": "Obtenha mais detalhes e participe da discussão no <discordLink>Discord</discordLink> e <redditLink>Reddit</redditLink> 🚀"
+		"release": {
+			"heading": "Novidades nesta versão:",
+			"browserUse": "Browser Use 2.0 atualiza a experiência de navegação em chat com sessões persistentes, feedback mais claro, um painel de navegador dedicado e descrições de ações mais naturais",
+			"cloudPaid": "O provedor Alchemi Code Cloud agora oferece modelos pagos: compre créditos e use-os para agentes na nuvem e inferência"
+		},
+		"cloudAgents": {
+			"heading": "Novidades na Nuvem:",
+			"specialized": "Apresentando <bold>Explainer</bold>, <bold>Planner</bold> e <bold>Coder</bold> - três agentes em nuvem especializados para aprimorar seus fluxos de trabalho.",
+			"description": "Os agentes trabalham juntos na nuvem e podem ser acionados a partir da web ou por meio do Slack.",
+			"tryButton": "Experimentar Agentes em Nuvem"
+		},
+		"careers": "Além disso, <careersLink>estamos contratando!</careersLink>",
+		"socialLinks": "Junte-se a nós no <xLink>X</xLink>, <discordLink>Discord</discordLink>, ou <redditLink>r/AlchemiCode</redditLink> 🚀"
 	},
 	"browser": {
-		"rooWantsToUse": "Alchemi quer usar o navegador:",
+		"session": "Sessão do Navegador",
+		"rooWantsToUse": "Alchemi quer usar o navegador",
 		"consoleLogs": "Logs do console",
 		"noNewLogs": "(Sem novos logs)",
 		"screenshot": "Captura de tela do navegador",
@@ -296,8 +322,10 @@
 			"launch": "Iniciar navegador em {{url}}",
 			"click": "Clique ({{coordinate}})",
 			"type": "Digitar \"{{text}}\"",
+			"press": "Pressione {{key}}",
 			"scrollDown": "Rolar para baixo",
 			"scrollUp": "Rolar para cima",
+			"hover": "Pairar ({{coordinate}})",
 			"close": "Fechar navegador"
 		}
 	},
@@ -305,8 +333,6 @@
 		"tooltips": {
 			"expand": "Expandir bloco de código",
 			"collapse": "Recolher bloco de código",
-			"enable_wrap": "Ativar quebra de linha",
-			"disable_wrap": "Desativar quebra de linha",
 			"copy_code": "Copiar código"
 		}
 	},
@@ -330,8 +356,8 @@
 		}
 	},
 	"codebaseSearch": {
-		"wantsToSearch": "Alchemi quer pesquisar na base de código por <code>{{query}}</code>:",
-		"wantsToSearchWithPath": "Alchemi quer pesquisar na base de código por <code>{{query}}</code> em <code>{{path}}</code>:",
+		"wantsToSearch": "Alchemi quer pesquisar na base de código por <code>{{query}}</code>",
+		"wantsToSearchWithPath": "Alchemi quer pesquisar na base de código por <code>{{query}}</code> em <code>{{path}}</code>",
 		"didSearch_one": "Encontrado 1 resultado",
 		"didSearch_other": "Encontrados {{count}} resultados",
 		"resultTooltip": "Pontuação de similaridade: {{score}} (clique para abrir o arquivo)"
@@ -369,6 +395,7 @@
 		"tooltip": "Gerenciar comandos de barra",
 		"title": "Comandos de Barra",
 		"description": "Use comandos de barra integrados ou crie personalizados para acesso rápido a prompts e fluxos de trabalho usados com frequência. <DocsLink>Documentação</DocsLink>",
+		"manageCommands": "Gerenciar comandos de barra nas configurações",
 		"builtInCommands": "Comandos Integrados",
 		"globalCommands": "Comandos Globais",
 		"workspaceCommands": "Comandos do Espaço de Trabalho",
@@ -384,8 +411,25 @@
 			"confirm": "Excluir"
 		}
 	},
+	"contextMenu": {
+		"noResults": "Nenhum resultado",
+		"problems": "Problemas",
+		"terminal": "Terminal",
+		"url": "Cole o URL para buscar o conteúdo"
+	},
 	"queuedMessages": {
-		"title": "Mensagens na fila:",
+		"title": "Mensagens na fila",
 		"clickToEdit": "Clique para editar a mensagem"
+	},
+	"slashCommand": {
+		"wantsToRun": "Alchemi quer executar um comando slash",
+		"didRun": "Alchemi executou um comando slash"
+	},
+	"todo": {
+		"partial": "{{completed}} de {{total}} tarefas concluídas",
+		"complete": "{{total}} tarefas concluídas",
+		"updated": "A lista de tarefas foi atualizada",
+		"completed": "Concluído",
+		"started": "Iniciado"
 	}
 }

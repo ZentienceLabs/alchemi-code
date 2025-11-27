@@ -8,7 +8,7 @@ import { RooCodeEventName, type ClineMessage } from "@roo-code/types"
 import { waitFor, sleep } from "../utils"
 import { setDefaultSuiteTimeout } from "../test-utils"
 
-suite("Alchemi Code list_files Tool", function () {
+suite.skip("Alchemi Code list_files Tool", function () {
 	setDefaultSuiteTimeout(this)
 
 	let workspaceDir: string

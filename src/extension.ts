@@ -12,7 +12,8 @@ try {
 	console.warn("Failed to load environment variables:", e)
 }
 
-import { CloudService, ExtensionBridgeService } from "@roo-code/cloud"
+import type { CloudUserInfo, AuthState } from "@roo-code/types"
+// import { CloudService, BridgeOrchestrator } from "@roo-code/cloud"
 import { TelemetryService, PostHogTelemetryClient } from "@roo-code/telemetry"
 
 import "./utils/path" // Necessary to have access to String.prototype.toPosix.
@@ -29,7 +30,6 @@ import { CodeIndexManager } from "./services/code-index/manager"
 import { MdmService } from "./services/mdm/MdmService"
 import { migrateSettings } from "./utils/migrateSettings"
 import { autoImportSettings } from "./utils/autoImportSettings"
-import { isRemoteControlEnabled } from "./utils/remoteControl"
 import { API } from "./extension/api"
 
 import {
@@ -40,6 +40,7 @@ import {
 	CodeActionProvider,
 } from "./activate"
 import { initializeI18n } from "./i18n"
+import { flushModels, getModels, initializeModelCacheRefresh } from "./api/providers/fetchers/modelCache"
 
 /**
  * Built using https://github.com/microsoft/vscode-webview-ui-toolkit
@@ -51,6 +52,11 @@ import { initializeI18n } from "./i18n"
 
 let outputChannel: vscode.OutputChannel
 let extensionContext: vscode.ExtensionContext
+// let cloudService: CloudService | undefined
+
+let authStateChangedHandler: ((data: { state: AuthState; previousState: AuthState }) => Promise<void>) | undefined
+let settingsUpdatedHandler: (() => void) | undefined
+let userInfoHandler: ((data: { userInfo: CloudUserInfo }) => Promise<void>) | undefined
 
 // This method is called when your extension is activated.
 // Your extension is activated the very first time the command is executed.
@@ -94,65 +100,58 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	const contextProxy = await ContextProxy.getInstance(context)
 
-	// Initialize code index managers for all workspace folders
+	// Initialize code index managers for all workspace folders.
 	const codeIndexManagers: CodeIndexManager[] = []
+
 	if (vscode.workspace.workspaceFolders) {
 		for (const folder of vscode.workspace.workspaceFolders) {
 			const manager = CodeIndexManager.getInstance(context, folder.uri.fsPath)
+
 			if (manager) {
 				codeIndexManagers.push(manager)
-				try {
-					await manager.initialize(contextProxy)
-				} catch (error) {
+
+				// Initialize in background; do not block extension activation
+				void manager.initialize(contextProxy).catch((error) => {
+					const message = error instanceof Error ? error.message : String(error)
 					outputChannel.appendLine(
-						`[CodeIndexManager] Error during background CodeIndexManager configuration/indexing for ${folder.uri.fsPath}: ${error.message || error}`,
+						`[CodeIndexManager] Error during background CodeIndexManager configuration/indexing for ${folder.uri.fsPath}: ${message}`,
 					)
-				}
+				})
+
 				context.subscriptions.push(manager)
 			}
 		}
 	}
 
-	// Initialize Alchemi Code Cloud service.
-	const cloudService = await CloudService.createInstance(context, cloudLogger)
+	// Initialize the provider *before* the Roo Code Cloud service.
+	const provider = new ClineProvider(context, outputChannel, "sidebar", contextProxy, mdmService)
+
+	// Initialize Roo Code Cloud service.
+	// const cloudService = await CloudService.createInstance(context, cloudLogger)
 
 	try {
-		if (cloudService.telemetryClient) {
-			TelemetryService.instance.register(cloudService.telemetryClient)
-		}
+		// if (cloudService.telemetryClient) {
+		// 	TelemetryService.instance.register(cloudService.telemetryClient)
+		// }
 	} catch (error) {
 		outputChannel.appendLine(
 			`[CloudService] Failed to register TelemetryClient: ${error instanceof Error ? error.message : String(error)}`,
 		)
 	}
 
-	const postStateListener = () => ClineProvider.getVisibleInstance()?.postStateToWebview()
-
-	cloudService.on("auth-state-changed", postStateListener)
-	cloudService.on("settings-updated", postStateListener)
-
-	cloudService.on("user-info", async ({ userInfo }) => {
-		postStateListener()
-
-		const bridgeConfig = await cloudService.cloudAPI?.bridgeConfig().catch(() => undefined)
-
-		if (!bridgeConfig) {
-			outputChannel.appendLine("[CloudService] Failed to get bridge config")
-			return
-		}
-
-		ExtensionBridgeService.handleRemoteControlState(
-			userInfo,
-			contextProxy.getValue("remoteControlEnabled"),
-			{ ...bridgeConfig, provider, sessionId: vscode.env.sessionId },
-			(message: string) => outputChannel.appendLine(message),
-		)
-	})
-
 	// Add to subscriptions for proper cleanup on deactivate.
-	context.subscriptions.push(cloudService)
+	// context.subscriptions.push(cloudService)
 
-	const provider = new ClineProvider(context, outputChannel, "sidebar", contextProxy, mdmService)
+	// Trigger initial cloud profile sync now that CloudService is ready.
+	try {
+		await provider.initializeCloudProfileSyncWhenReady()
+	} catch (error) {
+		outputChannel.appendLine(
+			`[CloudService] Failed to initialize cloud profile sync: ${error instanceof Error ? error.message : String(error)}`,
+		)
+	}
+
+	// Finish initializing the provider.
 	TelemetryService.instance.setProvider(provider)
 
 	context.subscriptions.push(
@@ -273,6 +272,9 @@ export async function activate(context: vscode.ExtensionContext) {
 		})
 	}
 
+	// Initialize background model cache refresh
+	initializeModelCacheRefresh()
+
 	return new API(outputChannel, provider, socketPath, enableLogging)
 }
 
@@ -280,11 +282,33 @@ export async function activate(context: vscode.ExtensionContext) {
 export async function deactivate() {
 	outputChannel.appendLine(`${Package.name} extension deactivated`)
 
-	const bridgeService = ExtensionBridgeService.getInstance()
+	// if (cloudService && CloudService.hasInstance()) {
+	// 	try {
+	// 		if (authStateChangedHandler) {
+	// 			CloudService.instance.off("auth-state-changed", authStateChangedHandler)
+	// 		}
+	// 	}
+	// 	if (settingsUpdatedHandler) {
+	// 		CloudService.instance.off("settings-updated", settingsUpdatedHandler)
+	// 	}
 
-	if (bridgeService) {
-		await bridgeService.disconnect()
-	}
+	// 	if (userInfoHandler) {
+	// 		CloudService.instance.off("user-info", userInfoHandler as any)
+	// 	}
+
+	// 	outputChannel.appendLine("CloudService event handlers cleaned up")
+	// } catch (error) {
+	// 		outputChannel.appendLine(
+	// 			`Failed to clean up CloudService event handlers: ${error instanceof Error ? error.message : String(error)}`,
+	// 		)
+	// 	}
+	// }
+
+	// const bridge = BridgeOrchestrator.getInstance()
+
+	// if (bridge) {
+	// 	await bridge.disconnect()
+	// }
 
 	await McpServerManager.cleanup(extensionContext)
 	TelemetryService.instance.shutdown()

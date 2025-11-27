@@ -1,11 +1,11 @@
 import type { Metadata } from "next"
 import { SEO } from "@/lib/seo"
+import { ogImageUrl } from "@/lib/og"
 
-const TITLE = "Privacy Policy"
+const TITLE = "Our Privacy Policy"
 const DESCRIPTION =
 	"Privacy policy for Alchemi Code Cloud and marketing website. Learn how we handle your data and protect your privacy."
 const PATH = "/privacy"
-const OG_IMAGE = SEO.ogImage
 
 export const metadata: Metadata = {
 	title: TITLE,
@@ -20,10 +20,10 @@ export const metadata: Metadata = {
 		siteName: SEO.name,
 		images: [
 			{
-				url: OG_IMAGE.url,
-				width: OG_IMAGE.width,
-				height: OG_IMAGE.height,
-				alt: OG_IMAGE.alt,
+				url: ogImageUrl(TITLE, OG_DESCRIPTION),
+				width: 1200,
+				height: 630,
+				alt: TITLE,
 			},
 		],
 		locale: SEO.locale,
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
 		card: SEO.twitterCard,
 		title: TITLE,
 		description: DESCRIPTION,
-		images: [OG_IMAGE.url],
+		images: [ogImageUrl(TITLE, OG_DESCRIPTION)],
 	},
 	keywords: [...SEO.keywords, "privacy", "data protection", "GDPR", "security"],
 }
@@ -46,7 +46,7 @@ export default function Privacy() {
 					<h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
 						Alchemi Code Cloud Privacy Policy
 					</h1>
-					<p className="text-muted-foreground">Last Updated: August 20, 2025</p>
+					<p className="text-muted-foreground">Last Updated: September 19, 2025</p>
 
 					<p className="lead">
 						This Privacy Policy explains how Alchemi Code, Inc. (&quot;Alchemi Code,&quot; &quot;we,&quot;
@@ -184,6 +184,13 @@ export default function Privacy() {
 						</li>
 						<li>
 							<strong>Send product updates and roadmap communications</strong> (opt‑out available)
+						</li>
+						<li>
+							<strong>Send onboarding, educational, and promotional communications</strong>. We may use
+							your account information (such as your name and email address) to send you onboarding
+							messages, product tutorials, feature announcements, newsletters, and other marketing
+							communications. You can opt out of non‑transactional emails at any time (see “Your Choices”
+							below).
 						</li>
 					</ul>
 

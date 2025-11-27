@@ -24,7 +24,9 @@
 		"connectToCloudDescription": "登录 Alchemi Code Cloud 以分享任务",
 		"sharingDisabledByOrganization": "组织已禁用分享功能",
 		"shareSuccessOrganization": "组织链接已复制到剪贴板",
-		"shareSuccessPublic": "公开链接已复制到剪贴板"
+		"shareSuccessPublic": "公开链接已复制到剪贴板",
+		"openInCloud": "在 Alchemi Code Cloud 中打开任务",
+		"openInCloudIntro": "从任何地方继续监控或与 Alchemi 交互。扫描、点击或复制以打开。"
 	},
 	"unpin": "取消置顶",
 	"pin": "置顶",
@@ -59,7 +61,7 @@
 		"tooltip": "批准此操作"
 	},
 	"runCommand": {
-		"title": "运行命令",
+		"title": "命令",
 		"tooltip": "执行此命令"
 	},
 	"proceedWhileRunning": {
@@ -83,24 +85,17 @@
 		"tooltip": "取消当前操作"
 	},
 	"scrollToBottom": "滚动到聊天底部",
-	"about": "通过 AI 辅助生成、重构和调试代码。查看我们的 <DocsLink>文档</DocsLink> 了解更多信息。",
-	"onboarding": "<strong>此工作区中的任务列表为空。</strong> 请在下方输入任务开始。 不确定如何开始？ 在 <DocsLink>文档</DocsLink> 中阅读更多关于 Alchemi 可以为您做什么的信息。",
+	"about": "Alchemi Code 是您编辑器中的整个 AI 开发团队。",
+	"docs": "查看我们的 <DocsLink>文档</DocsLink> 了解更多信息。",
+	"onboarding": "此工作区中的任务列表为空。",
 	"rooTips": {
-		"boomerangTasks": {
-			"title": "任务编排",
-			"description": "将任务拆分为更小、更易于管理的部分。"
-		},
-		"stickyModels": {
-			"title": "粘性模式",
-			"description": "每个模式 都会记住 您上次使用的模型"
-		},
-		"tools": {
-			"title": "工具",
-			"description": "允许 AI 通过浏览网络、运行命令等方式解决问题。"
-		},
 		"customizableModes": {
-			"title": "自定义模式",
-			"description": "具有专属行为和指定模型的特定角色"
+			"title": "可自定义模式",
+			"description": "专注任务并交付成果的专业角色。"
+		},
+		"modelAgnostic": {
+			"title": "自带模型",
+			"description": "使用您自己的提供商密钥，甚至可以在本地运行推理 — 无加价，无锁定，无限制"
 		}
 	},
 	"selectMode": "选择交互模式",
@@ -119,11 +114,11 @@
 		"title": "模式",
 		"marketplace": "模式市场",
 		"settings": "模式设置",
-		"description": "专门定制Roo行为的角色。",
+		"description": "专门定制Alchemi行为的角色。",
 		"searchPlaceholder": "搜索模式...",
 		"noResults": "未找到结果"
 	},
-	"errorReadingFile": "读取文件时出错:",
+	"errorReadingFile": "读取文件时出错",
 	"noValidImages": "没有处理有效图片",
 	"separator": "分隔符",
 	"edit": "编辑...",
@@ -133,7 +128,7 @@
 	"diffError": {
 		"title": "编辑失败"
 	},
-	"troubleMessage": "Roo遇到问题...",
+	"troubleMessage": "Alchemi遇到问题...",
 	"apiRequest": {
 		"title": "API请求",
 		"failed": "API请求失败",
@@ -146,6 +141,9 @@
 		"initializingWarning": "正在初始化检查点...如果耗时过长，你可以在<settingsLink>设置</settingsLink>中禁用检查点并重新启动任务。",
 		"menu": {
 			"viewDiff": "查看差异",
+			"more": "更多选项",
+			"viewDiffFromInit": "查看所有更改",
+			"viewDiffWithCurrent": "查看自此检查点以来的更改",
 			"restore": "恢复检查点",
 			"restoreFiles": "恢复文件",
 			"restoreFilesDescription": "将项目文件恢复到此检查点状态",
@@ -161,45 +159,50 @@
 		"wantsToFetch": "Alchemi 想要获取详细指示以协助当前任务"
 	},
 	"fileOperations": {
-		"wantsToRead": "需要读取文件:",
-		"wantsToReadOutsideWorkspace": "请求访问外部文件:",
-		"didRead": "已读取文件:",
-		"wantsToEdit": "需要编辑文件:",
-		"wantsToEditOutsideWorkspace": "需要编辑外部文件:",
-		"wantsToEditProtected": "需要编辑受保护的配置文件:",
-		"wantsToCreate": "需要新建文件:",
-		"wantsToSearchReplace": "需要在此文件中搜索和替换:",
-		"didSearchReplace": "已完成搜索和替换:",
-		"wantsToInsert": "需要在此文件中插入内容:",
-		"wantsToInsertWithLineNumber": "需要在第 {{lineNumber}} 行插入内容:",
-		"wantsToInsertAtEnd": "需要在文件末尾添加内容:",
-		"wantsToReadAndXMore": "Alchemi 想读取此文件以及另外 {{count}} 个文件：",
-		"wantsToReadMultiple": "Alchemi 想要读取多个文件：",
-		"wantsToApplyBatchChanges": "Alchemi 想要对多个文件应用更改："
+		"wantsToRead": "需要读取文件",
+		"wantsToReadOutsideWorkspace": "请求访问外部文件",
+		"didRead": "已读取文件",
+		"wantsToEdit": "需要编辑文件",
+		"wantsToEditOutsideWorkspace": "需要编辑外部文件",
+		"wantsToEditProtected": "需要编辑受保护的配置文件",
+		"wantsToCreate": "需要新建文件",
+		"wantsToSearchReplace": "需要在此文件中搜索和替换",
+		"didSearchReplace": "已完成搜索和替换",
+		"wantsToInsert": "需要在此文件中插入内容",
+		"wantsToInsertWithLineNumber": "需要在第 {{lineNumber}} 行插入内容",
+		"wantsToInsertAtEnd": "需要在文件末尾添加内容",
+		"wantsToReadAndXMore": "Alchemi 想读取此文件以及另外 {{count}} 个文件",
+		"wantsToReadMultiple": "Alchemi 想要读取多个文件",
+		"wantsToApplyBatchChanges": "Alchemi 想要对多个文件应用更改",
+		"wantsToGenerateImage": "需要生成图片",
+		"wantsToGenerateImageOutsideWorkspace": "需要在工作区外生成图片",
+		"wantsToGenerateImageProtected": "需要在受保护位置生成图片",
+		"didGenerateImage": "已生成图片"
 	},
 	"directoryOperations": {
-		"wantsToViewTopLevel": "需要查看目录文件列表:",
-		"didViewTopLevel": "已查看目录文件列表:",
-		"wantsToViewRecursive": "需要查看目录所有文件:",
-		"didViewRecursive": "已查看目录所有文件:",
-		"wantsToViewDefinitions": "Roo想查看此目录中使用的源代码定义名称:",
-		"didViewDefinitions": "Roo已查看此目录中使用的源代码定义名称:",
+		"wantsToViewTopLevel": "需要查看目录文件列表",
+		"didViewTopLevel": "已查看目录文件列表",
+		"wantsToViewRecursive": "需要查看目录所有文件",
+		"didViewRecursive": "已查看目录所有文件",
+		"wantsToViewDefinitions": "Alchemi想查看此目录中使用的源代码定义名称",
+		"didViewDefinitions": "Alchemi已查看此目录中使用的源代码定义名称",
 		"wantsToSearch": "需要搜索内容: {{regex}}",
 		"didSearch": "已完成内容搜索: {{regex}}",
 		"wantsToSearchOutsideWorkspace": "需要搜索内容（工作区外）: {{regex}}",
 		"didSearchOutsideWorkspace": "已完成内容搜索（工作区外）: {{regex}}",
-		"wantsToViewTopLevelOutsideWorkspace": "需要查看目录文件列表（工作区外）:",
-		"didViewTopLevelOutsideWorkspace": "已查看目录文件列表（工作区外）:",
-		"wantsToViewRecursiveOutsideWorkspace": "需要查看目录所有文件（工作区外）:",
-		"didViewRecursiveOutsideWorkspace": "已查看目录所有文件（工作区外）:",
-		"wantsToViewDefinitionsOutsideWorkspace": "Roo想查看此目录中使用的源代码定义名称（工作区外）:",
-		"didViewDefinitionsOutsideWorkspace": "Roo已查看此目录中使用的源代码定义名称（工作区外）:"
+		"wantsToViewTopLevelOutsideWorkspace": "需要查看目录文件列表（工作区外）",
+		"didViewTopLevelOutsideWorkspace": "已查看目录文件列表（工作区外）",
+		"wantsToViewRecursiveOutsideWorkspace": "需要查看目录所有文件（工作区外）",
+		"didViewRecursiveOutsideWorkspace": "已查看目录所有文件（工作区外）",
+		"wantsToViewDefinitionsOutsideWorkspace": "Alchemi想查看此目录中使用的源代码定义名称（工作区外）",
+		"didViewDefinitionsOutsideWorkspace": "Alchemi已查看此目录中使用的源代码定义名称（工作区外）"
 	},
 	"commandOutput": "命令输出",
 	"commandExecution": {
 		"running": "正在运行",
+		"abort": "中止",
 		"pid": "PID: {{pid}}",
-		"exited": "已退出 ({{exitCode}})",
+		"exitStatus": "已退出，状态码 {{exitCode}}",
 		"manageCommands": "管理命令权限",
 		"commandManagementDescription": "管理命令权限：点击 ✓ 允许自动执行，点击 ✗ 拒绝执行。可以打开/关闭模式或从列表中删除。<settingsLink>查看所有设置</settingsLink>",
 		"addToAllowed": "添加到允许列表",
@@ -214,9 +217,15 @@
 	},
 	"response": "响应",
 	"arguments": "参数",
+	"text": {
+		"rooSaid": "Alchemi 说"
+	},
+	"feedback": {
+		"youSaid": "你说"
+	},
 	"mcp": {
-		"wantsToUseTool": "Roo想在{{serverName}} MCP上使用工具:",
-		"wantsToAccessResource": "Roo想访问{{serverName}} MCP服务上的资源:"
+		"wantsToUseTool": "Alchemi想在{{serverName}} MCP上使用工具",
+		"wantsToAccessResource": "Alchemi想访问{{serverName}} MCP服务上的资源"
 	},
 	"modes": {
 		"wantsToSwitch": "即将切换至{{mode}}模式",
@@ -225,8 +234,8 @@
 		"didSwitchWithReason": "已切换至{{mode}}模式（原因：{{reason}}）"
 	},
 	"subtasks": {
-		"wantsToCreate": "Roo想在<code>{{mode}}</code>模式下创建新子任务:",
-		"wantsToFinish": "Roo想完成此子任务",
+		"wantsToCreate": "Alchemi想在<code>{{mode}}</code>模式下创建新子任务",
+		"wantsToFinish": "Alchemi想完成此子任务",
 		"newTaskContent": "子任务说明",
 		"completionContent": "子任务已完成",
 		"resultContent": "子任务结果",
@@ -234,19 +243,29 @@
 		"completionInstructions": "子任务已完成！您可以查看结果并提出修改或下一步建议。如果一切正常，请确认以将结果返回给主任务。"
 	},
 	"questions": {
-		"hasQuestion": "Roo有一个问题:"
+		"hasQuestion": "Alchemi有一个问题"
 	},
 	"taskCompleted": "任务完成",
 	"powershell": {
 		"issues": "看起来您遇到了Windows PowerShell问题，请参阅此"
 	},
 	"autoApprove": {
-		"title": "自动批准:",
+		"tooltipManage": "管理自动批准设置",
+		"tooltipStatus": "自动批准已启用：{{toggles}}",
+		"title": "自动批准",
+		"toggle": "切换自动批准",
+		"all": "全部",
 		"none": "无",
-		"description": "允许直接执行操作无需确认，请谨慎启用。前往<settingsLink>设置</settingsLink>调整",
-		"selectOptionsFirst": "选择至少一个下面的选项以启用自动批准",
+		"description": "无需请求权限即可执行这些操作。仅对您完全信任的操作启用此功能。",
+		"selectOptionsFirst": "请至少选择以下一个选项以启用自动批准",
 		"toggleAriaLabel": "切换自动批准",
-		"disabledAriaLabel": "自动批准已禁用 - 请先选择选项"
+		"disabledAriaLabel": "自动批准已禁用 - 请先选择选项",
+		"triggerLabelOff": "自动批准已关闭",
+		"triggerLabelOffShort": "关闭",
+		"triggerLabel_zero": "0 个自动批准",
+		"triggerLabel_one": "1 个自动批准",
+		"triggerLabel_other": "{{count}} 个自动批准",
+		"triggerLabelAll": "YOLO"
 	},
 	"reasoning": {
 		"thinking": "思考中",
@@ -266,21 +285,29 @@
 	"announcement": {
 		"title": "🎉 Alchemi Code {{version}} 已发布",
 		"stealthModel": {
-			"feature": "<bold>限时免费隐形模型</bold> - 一个在代理编程方面表现出色的超快推理模型，拥有 262k 上下文窗口，通过 Alchemi Code Cloud 提供。",
+			"feature": "<bold>限时免费隐形模型</bold> - Code Supernova：现已升级为 <bold>1M Token 上下文窗口</bold>！一个支持图像输入的多功能代理编程模型，通过 Alchemi Code Cloud 提供。",
 			"note": "(注意：提示词和补全内容会被模型创建者记录并用于改进模型)",
 			"connectButton": "连接到 Alchemi Code Cloud",
-			"selectModel": "在<br/><settingsLink>设置</settingsLink>中从 Alchemi Code Cloud 提供商选择 <code>roo/sonic</code> 开始使用"
+			"selectModel": "在设置中从 Alchemi Code Cloud 提供商选择 <code>roo/code-supernova</code> 开始使用。",
+			"goToSettingsButton": "前往设置"
 		},
-		"description": "Alchemi Code {{version}} 带来强大的新功能和重大改进，提升您的开发工作流程。",
-		"whatsNew": "新特性",
-		"feature1": "<bold>消息队列</bold>: 在 Alchemi 工作时将多个消息排队，让你可以不间断地继续规划工作流程。",
-		"feature2": "<bold>自定义斜杠命令</bold>: 创建个性化斜杠命令，快速访问常用提示词和工作流程，具备完整的 UI 管理功能。",
-		"feature3": "<bold>增强的 Gemini 工具</bold>: 新的 URL 上下文和 Google 搜索基础功能为 Gemini 模型提供实时网络信息和增强的研究能力。",
-		"hideButton": "隐藏公告",
-		"detailsDiscussLinks": "在 <discordLink>Discord</discordLink> 和 <redditLink>Reddit</redditLink> 获取更多详情并参与讨论 🚀"
+		"release": {
+			"heading": "最新功能：",
+			"browserUse": "Browser Use 2.0 升级了聊天内浏览体验，支持持久会话、更清晰的反馈、专用浏览器面板以及更自然的操作描述",
+			"cloudPaid": "Alchemi Code Cloud 现已提供付费模型：购买积分即可同时用于云端智能体和推理服务"
+		},
+		"cloudAgents": {
+			"heading": "云端新功能：",
+			"specialized": "推出 <bold>Explainer</bold>、<bold>Planner</bold> 和 <bold>Coder</bold> - 三个专业云代理来增强你的工作流程。",
+			"description": "代理在云端协同工作，可从网页或通过 Slack 触发。",
+			"tryButton": "试用云代理"
+		},
+		"careers": "此外，<careersLink>我们正在招聘！</careersLink>",
+		"socialLinks": "在 <xLink>X</xLink>、<discordLink>Discord</discordLink> 或 <redditLink>r/AlchemiCode</redditLink> 上关注我们 🚀"
 	},
 	"browser": {
-		"rooWantsToUse": "Roo想使用浏览器:",
+		"session": "浏览器会话",
+		"rooWantsToUse": "Alchemi想使用浏览器",
 		"consoleLogs": "控制台日志",
 		"noNewLogs": "(没有新日志)",
 		"screenshot": "浏览器截图",
@@ -296,8 +323,10 @@
 			"launch": "访问 {{url}}",
 			"click": "点击 ({{coordinate}})",
 			"type": "输入 \"{{text}}\"",
+			"press": "按 {{key}}",
 			"scrollDown": "向下滚动",
 			"scrollUp": "向上滚动",
+			"hover": "悬停 ({{coordinate}})",
 			"close": "关闭浏览器"
 		}
 	},
@@ -305,8 +334,6 @@
 		"tooltips": {
 			"expand": "展开代码块",
 			"collapse": "收起代码块",
-			"enable_wrap": "启用自动换行",
-			"disable_wrap": "禁用自动换行",
 			"copy_code": "复制代码"
 		}
 	},
@@ -325,7 +352,7 @@
 		},
 		"autoApprovedCostLimitReached": {
 			"title": "已达到自动批准的费用限额",
-			"description": "Roo已经达到了${{count}}的自动批准成本限制。您想重置成本并继续任务吗？",
+			"description": "Alchemi已经达到了${{count}}的自动批准成本限制。您想重置成本并继续任务吗？",
 			"button": "重置并继续"
 		}
 	},
@@ -369,6 +396,7 @@
 		"tooltip": "管理斜杠命令",
 		"title": "斜杠命令",
 		"description": "使用内置斜杠命令或创建自定义命令，快速访问常用提示词和工作流程。<DocsLink>文档</DocsLink>",
+		"manageCommands": "在设置中管理斜杠命令",
 		"builtInCommands": "内置命令",
 		"globalCommands": "全局命令",
 		"workspaceCommands": "工作区命令",
@@ -384,8 +412,25 @@
 			"confirm": "删除"
 		}
 	},
+	"contextMenu": {
+		"noResults": "无结果",
+		"problems": "问题",
+		"terminal": "终端",
+		"url": "粘贴URL以获取内容"
+	},
 	"queuedMessages": {
-		"title": "队列消息:",
+		"title": "队列消息",
 		"clickToEdit": "点击编辑消息"
+	},
+	"slashCommand": {
+		"wantsToRun": "Alchemi 想要运行斜杠命令",
+		"didRun": "Alchemi 运行了斜杠命令"
+	},
+	"todo": {
+		"partial": "已完成 {{completed}} / {{total}} 个待办事项",
+		"complete": "已完成 {{total}} 个待办事项",
+		"updated": "已更新待办事项列表",
+		"completed": "已完成",
+		"started": "已开始"
 	}
 }

@@ -1,16 +1,69 @@
-<div align="center">
-<sub>
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=RooVeterinaryInc.roo-cline"><img src="https://img.shields.io/badge/VS_Code_Marketplace-007ACC?style=flat&logo=visualstudiocode&logoColor=white" alt="VS Code Marketplace"></a>
+  <a href="https://x.com/roocode"><img src="https://img.shields.io/badge/roocode-000000?style=flat&logo=x&logoColor=white" alt="X"></a>
+  <a href="https://youtube.com/@roocodeyt?feature=shared"><img src="https://img.shields.io/badge/YouTube-FF0000?style=flat&logo=youtube&logoColor=white" alt="YouTube"></a>
+  <a href="https://discord.gg/roocode"><img src="https://img.shields.io/badge/Join%20Discord-5865F2?style=flat&logo=discord&logoColor=white" alt="Join Discord"></a>
+  <a href="https://www.reddit.com/r/RooCode/"><img src="https://img.shields.io/badge/Join%20r%2FRooCode-FF4500?style=flat&logo=reddit&logoColor=white" alt="Join r/RooCode"></a>
+</p>
+<p align="center">
+  <em>Obtén ayuda rápido → <a href="https://discord.gg/roocode">Únete a Discord</a> • ¿Prefieres asíncrono? → <a href="https://www.reddit.com/r/RooCode/">Únete a r/RooCode</a></em>
+</p>
 
-[English](../../README.md) • [Català](../ca/README.md) • [Deutsch](../de/README.md) • <b>Español</b> • [Français](../fr/README.md) • [हिन्दी](../hi/README.md) • [Bahasa Indonesia](../id/README.md) • [Italiano](../it/README.md) • [日本語](../ja/README.md)
+# Roo Code
 
-</sub>
-<sub>
+> Tu equipo de desarrollo con IA, directamente en tu editor
 
-[한국어](../ko/README.md) • [Nederlands](../nl/README.md) • [Polski](../pl/README.md) • [Português (BR)](../pt-BR/README.md) • [Русский](../ru/README.md) • [Türkçe](../tr/README.md) • [Tiếng Việt](../vi/README.md) • [简体中文](../zh-CN/README.md) • [繁體中文](../zh-TW/README.md)
+<details>
+  <summary>🌐 Idiomas disponibles</summary>
 
-</sub>
-</div>
-<br>
+- [English](../../README.md)
+- [Català](../ca/README.md)
+- [Deutsch](../de/README.md)
+- [Español](../es/README.md)
+- [Français](../fr/README.md)
+- [हिंदी](../hi/README.md)
+- [Bahasa Indonesia](../id/README.md)
+- [Italiano](../it/README.md)
+- [日本語](../ja/README.md)
+- [한국어](../ko/README.md)
+- [Nederlands](../nl/README.md)
+- [Polski](../pl/README.md)
+- [Português (BR)](../pt-BR/README.md)
+- [Русский](../ru/README.md)
+- [Türkçe](../tr/README.md)
+- [Tiếng Việt](../vi/README.md)
+- [简体中文](../zh-CN/README.md)
+- [繁體中文](../zh-TW/README.md)
+- ...
+  </details>
+
+---
+
+## ¿Qué puede hacer Roo Code por TI?
+
+- Generar código a partir de descripciones en lenguaje natural
+- Adaptarse con Modos: Código, Arquitecto, Pregunta, Depuración y Modos Personalizados
+- Refactorizar y depurar código existente
+- Escribir y actualizar documentación
+- Responder preguntas sobre tu base de código
+- Automatizar tareas repetitivas
+- Utilizar servidores MCP
+
+## Modos
+
+Roo Code se adapta a tu forma de trabajar, no al revés:
+
+- Modo Código: codificación diaria, ediciones y operaciones de archivos
+- Modo Arquitecto: planificar sistemas, especificaciones y migraciones
+- Modo Pregunta: respuestas rápidas, explicaciones y documentos
+- Modo Depuración: rastrear problemas, agregar registros, aislar causas raíz
+- Modos Personalizados: crea modos especializados para tu equipo o flujo de trabajo
+- Roomote Control: Roomote Control te permite controlar de forma remota tareas que se ejecutan en tu instancia local de VS Code.
+
+Más info: [Usar Modos](https://docs.roocode.com/basic-usage/using-modes) • [Modos Personalizados](https://docs.roocode.com/advanced-usage/custom-modes) • [Roomote Control](https://docs.roocode.com/roo-code-cloud/roomote-control)
+
+## Tutoriales y vídeos de funcionalidades
+
 <div align="center">
   <h2>Únete a la comunidad de Alchemi Code</h2>
   <p>Conéctate con desarrolladores, contribuye con ideas y mantente al día con las últimas herramientas de programación impulsadas por IA.</p>
@@ -109,17 +162,12 @@ Haz que Alchemi Code funcione a tu manera con:
 
 ## Recursos
 
-### Documentación
-
-- [Guía de uso básico](https://docs.roocode.com/basic-usage/the-chat-interface)
-- [Funciones avanzadas](https://docs.roocode.com/advanced-usage/auto-approving-actions)
-- [Preguntas frecuentes](https://docs.roocode.com/faq)
-
-### Comunidad
-
-- **Discord:** [Únete a nuestro servidor de Discord](https://discord.gg/roocode) para ayuda en tiempo real y discusiones
-- **Reddit:** [Visita nuestro subreddit](https://www.reddit.com/r/RooCode) para compartir experiencias y consejos
-- **GitHub:** Reporta [problemas](https://github.com/RooCodeInc/Roo-Code/issues) o solicita [funciones](https://github.com/RooCodeInc/Roo-Code/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop)
+- **[Documentación](https://docs.roocode.com):** La guía oficial para instalar, configurar y dominar Roo Code.
+- **[Canal de YouTube](https://youtube.com/@roocodeyt?feature=shared):** Mira tutoriales y ve las funcionalidades en acción.
+- **[Servidor de Discord](https://discord.gg/roocode):** Únete a la comunidad para obtener ayuda y discutir en tiempo real.
+- **[Comunidad de Reddit](https://www.reddit.com/r/RooCode):** Comparte tus experiencias y ve lo que otros están construyendo.
+- **[Incidencias de GitHub](https://github.com/RooCodeInc/Roo-Code/issues):** Reporta errores y sigue el desarrollo.
+- **[Solicitudes de funcionalidades](https://github.com/RooCodeInc/Roo-Code/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop):** ¿Tienes una idea? Compártela con los desarrolladores.
 
 ---
 
@@ -131,13 +179,28 @@ Haz que Alchemi Code funcione a tu manera con:
 git clone https://github.com/RooCodeInc/Roo-Code.git
 ```
 
-2. **Instala dependencias**:
+2. **Instala las dependencias**:
 
 ```sh
-npm run install:all
+pnpm install
 ```
 
-3. **Inicia la vista web (aplicación Vite/React con HMR)**:
+3. **Ejecuta la extensión**:
+
+Hay varias formas de ejecutar la extensión Roo Code:
+
+### Modo de desarrollo (F5)
+
+Para el desarrollo activo, utiliza la depuración integrada de VSCode:
+
+Presiona `F5` (o ve a **Ejecutar** → **Iniciar depuración**) en VSCode. Esto abrirá una nueva ventana de VSCode con la extensión Roo Code en ejecución.
+
+- Los cambios en la vista web aparecerán inmediatamente.
+- Los cambios en la extensión principal también se recargarán automáticamente.
+
+### Instalación automatizada de VSIX
+
+Para construir e instalar la extensión como un paquete VSIX directamente en VSCode:
 
 ```sh
 npm run dev
@@ -160,7 +223,9 @@ Aparecerá un archivo `.vsix` en el directorio `bin/` que se puede instalar con:
 code --install-extension bin/roo-cline-<version>.vsix
 ```
 
-Usamos [changesets](https://github.com/changesets/changesets) para versionar y publicar. Consulta nuestro `CHANGELOG.md` para ver las notas de lanzamiento.
+---
+
+Usamos [changesets](https://github.com/changesets/changesets) para el versionado y la publicación. Consulta nuestro `CHANGELOG.md` para ver las notas de la versión.
 
 ---
 

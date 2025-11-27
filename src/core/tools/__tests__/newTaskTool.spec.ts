@@ -68,12 +68,13 @@ const mockAskApproval = vi.fn<AskApproval>()
 const mockHandleError = vi.fn<HandleError>()
 const mockPushToolResult = vi.fn()
 const mockRemoveClosingTag = vi.fn((_name: string, value: string | undefined) => value ?? "")
-const mockCreateTask = vi
-	.fn<(text?: string, images?: string[], parentTask?: any, options?: any) => Promise<MockClineInstance>>()
-	.mockResolvedValue({ taskId: "mock-subtask-id" })
 const mockEmit = vi.fn()
 const mockRecordToolError = vi.fn()
 const mockSayAndCreateMissingParamError = vi.fn()
+const mockStartSubtask = vi
+	.fn<(message: string, todoItems: any[], mode: string) => Promise<MockClineInstance>>()
+	.mockResolvedValue({ taskId: "mock-subtask-id" })
+const mockCheckpointSave = vi.fn()
 
 // Mock the Cline instance and its methods/properties
 const mockCline = {
@@ -84,17 +85,20 @@ const mockCline = {
 	consecutiveMistakeCount: 0,
 	isPaused: false,
 	pausedModeSlug: "ask",
+	taskId: "mock-parent-task-id",
+	enableCheckpoints: false,
+	checkpointSave: mockCheckpointSave,
+	startSubtask: mockStartSubtask,
 	providerRef: {
 		deref: vi.fn(() => ({
 			getState: vi.fn(() => ({ customModes: [], mode: "ask" })),
 			handleModeSwitch: vi.fn(),
-			createTask: mockCreateTask,
 		})),
 	},
 }
 
-// Import the function to test AFTER mocks are set up
-import { newTaskTool } from "../newTaskTool"
+// Import the class to test AFTER mocks are set up
+import { newTaskTool } from "../NewTaskTool"
 import type { ToolUse } from "../../../shared/tools"
 import { getModeBySlug } from "../../../shared/modes"
 import * as vscode from "vscode"
@@ -131,35 +135,28 @@ describe("newTaskTool", () => {
 			partial: false,
 		}
 
-		await newTaskTool(
-			mockCline as any, // Use 'as any' for simplicity in mocking complex type
-			block,
-			mockAskApproval, // Now correctly typed
-			mockHandleError,
-			mockPushToolResult,
-			mockRemoveClosingTag,
-		)
+		await newTaskTool.handle(mockCline as any, block as ToolUse<"new_task">, {
+			askApproval: mockAskApproval,
+			handleError: mockHandleError,
+			pushToolResult: mockPushToolResult,
+			removeClosingTag: mockRemoveClosingTag,
+			toolProtocol: "xml",
+		})
 
 		// Verify askApproval was called
 		expect(mockAskApproval).toHaveBeenCalled()
 
-		// Verify the message passed to createTask reflects the code's behavior in unit tests
-		expect(mockCreateTask).toHaveBeenCalledWith(
+		// Verify the message passed to startSubtask reflects the code's behavior in unit tests
+		expect(mockStartSubtask).toHaveBeenCalledWith(
 			"Review this: \\@file1.txt and also \\\\\\@file2.txt", // Unit Test Expectation: \\@ -> \@, \\\\@ -> \\\\@
-			undefined,
-			mockCline,
-			expect.objectContaining({
-				initialTodos: expect.arrayContaining([
-					expect.objectContaining({ content: "First task" }),
-					expect.objectContaining({ content: "Second task" }),
-				]),
-			}),
+			expect.arrayContaining([
+				expect.objectContaining({ content: "First task" }),
+				expect.objectContaining({ content: "Second task" }),
+			]),
+			"code",
 		)
 
 		// Verify side effects
-		expect(mockCline.emit).toHaveBeenCalledWith("taskSpawned", expect.any(String)) // Assuming initCline returns a mock task ID
-		expect(mockCline.isPaused).toBe(true)
-		expect(mockCline.emit).toHaveBeenCalledWith("taskPaused")
 		expect(mockPushToolResult).toHaveBeenCalledWith(expect.stringContaining("Successfully created new task"))
 	})
 
@@ -175,22 +172,18 @@ describe("newTaskTool", () => {
 			partial: false,
 		}
 
-		await newTaskTool(
-			mockCline as any,
-			block,
-			mockAskApproval, // Now correctly typed
-			mockHandleError,
-			mockPushToolResult,
-			mockRemoveClosingTag,
-		)
+		await newTaskTool.handle(mockCline as any, block as ToolUse<"new_task">, {
+			askApproval: mockAskApproval,
+			handleError: mockHandleError,
+			pushToolResult: mockPushToolResult,
+			removeClosingTag: mockRemoveClosingTag,
+			toolProtocol: "xml",
+		})
 
-		expect(mockCreateTask).toHaveBeenCalledWith(
+		expect(mockStartSubtask).toHaveBeenCalledWith(
 			"This is already unescaped: \\@file1.txt", // Expected: \@ remains \@
-			undefined,
-			mockCline,
-			expect.objectContaining({
-				initialTodos: expect.any(Array),
-			}),
+			expect.any(Array),
+			"code",
 		)
 	})
 
@@ -206,22 +199,18 @@ describe("newTaskTool", () => {
 			partial: false,
 		}
 
-		await newTaskTool(
-			mockCline as any,
-			block,
-			mockAskApproval, // Now correctly typed
-			mockHandleError,
-			mockPushToolResult,
-			mockRemoveClosingTag,
-		)
+		await newTaskTool.handle(mockCline as any, block as ToolUse<"new_task">, {
+			askApproval: mockAskApproval,
+			handleError: mockHandleError,
+			pushToolResult: mockPushToolResult,
+			removeClosingTag: mockRemoveClosingTag,
+			toolProtocol: "xml",
+		})
 
-		expect(mockCreateTask).toHaveBeenCalledWith(
+		expect(mockStartSubtask).toHaveBeenCalledWith(
 			"A normal mention @file1.txt", // Expected: @ remains @
-			undefined,
-			mockCline,
-			expect.objectContaining({
-				initialTodos: expect.any(Array),
-			}),
+			expect.any(Array),
+			"code",
 		)
 	})
 
@@ -237,22 +226,18 @@ describe("newTaskTool", () => {
 			partial: false,
 		}
 
-		await newTaskTool(
-			mockCline as any,
-			block,
-			mockAskApproval, // Now correctly typed
-			mockHandleError,
-			mockPushToolResult,
-			mockRemoveClosingTag,
-		)
+		await newTaskTool.handle(mockCline as any, block as ToolUse<"new_task">, {
+			askApproval: mockAskApproval,
+			handleError: mockHandleError,
+			pushToolResult: mockPushToolResult,
+			removeClosingTag: mockRemoveClosingTag,
+			toolProtocol: "xml",
+		})
 
-		expect(mockCreateTask).toHaveBeenCalledWith(
+		expect(mockStartSubtask).toHaveBeenCalledWith(
 			"Mix: @file0.txt, \\@file1.txt, \\@file2.txt, \\\\\\@file3.txt", // Unit Test Expectation: @->@, \@->\@, \\@->\@, \\\\@->\\\\@
-			undefined,
-			mockCline,
-			expect.objectContaining({
-				initialTodos: expect.any(Array),
-			}),
+			expect.any(Array),
+			"code",
 		)
 	})
 
@@ -268,14 +253,13 @@ describe("newTaskTool", () => {
 			partial: false,
 		}
 
-		await newTaskTool(
-			mockCline as any,
-			block,
-			mockAskApproval,
-			mockHandleError,
-			mockPushToolResult,
-			mockRemoveClosingTag,
-		)
+		await newTaskTool.handle(mockCline as any, block as ToolUse<"new_task">, {
+			askApproval: mockAskApproval,
+			handleError: mockHandleError,
+			pushToolResult: mockPushToolResult,
+			removeClosingTag: mockRemoveClosingTag,
+			toolProtocol: "xml",
+		})
 
 		// Should NOT error when todos is missing
 		expect(mockSayAndCreateMissingParamError).not.toHaveBeenCalledWith("new_task", "todos")
@@ -283,14 +267,7 @@ describe("newTaskTool", () => {
 		expect(mockCline.recordToolError).not.toHaveBeenCalledWith("new_task")
 
 		// Should create task with empty todos array
-		expect(mockCreateTask).toHaveBeenCalledWith(
-			"Test message",
-			undefined,
-			mockCline,
-			expect.objectContaining({
-				initialTodos: [],
-			}),
-		)
+		expect(mockStartSubtask).toHaveBeenCalledWith("Test message", [], "code")
 
 		// Should complete successfully
 		expect(mockPushToolResult).toHaveBeenCalledWith(expect.stringContaining("Successfully created new task"))
@@ -308,26 +285,22 @@ describe("newTaskTool", () => {
 			partial: false,
 		}
 
-		await newTaskTool(
-			mockCline as any,
-			block,
-			mockAskApproval,
-			mockHandleError,
-			mockPushToolResult,
-			mockRemoveClosingTag,
-		)
+		await newTaskTool.handle(mockCline as any, block as ToolUse<"new_task">, {
+			askApproval: mockAskApproval,
+			handleError: mockHandleError,
+			pushToolResult: mockPushToolResult,
+			removeClosingTag: mockRemoveClosingTag,
+			toolProtocol: "xml",
+		})
 
 		// Should parse and include todos when provided
-		expect(mockCreateTask).toHaveBeenCalledWith(
+		expect(mockStartSubtask).toHaveBeenCalledWith(
 			"Test message with todos",
-			undefined,
-			mockCline,
-			expect.objectContaining({
-				initialTodos: expect.arrayContaining([
-					expect.objectContaining({ content: "First task" }),
-					expect.objectContaining({ content: "Second task" }),
-				]),
-			}),
+			expect.arrayContaining([
+				expect.objectContaining({ content: "First task" }),
+				expect.objectContaining({ content: "Second task" }),
+			]),
+			"code",
 		)
 
 		expect(mockPushToolResult).toHaveBeenCalledWith(expect.stringContaining("Successfully created new task"))
@@ -345,14 +318,13 @@ describe("newTaskTool", () => {
 			partial: false,
 		}
 
-		await newTaskTool(
-			mockCline as any,
-			block,
-			mockAskApproval,
-			mockHandleError,
-			mockPushToolResult,
-			mockRemoveClosingTag,
-		)
+		await newTaskTool.handle(mockCline as any, block as ToolUse<"new_task">, {
+			askApproval: mockAskApproval,
+			handleError: mockHandleError,
+			pushToolResult: mockPushToolResult,
+			removeClosingTag: mockRemoveClosingTag,
+			toolProtocol: "xml",
+		})
 
 		expect(mockSayAndCreateMissingParamError).toHaveBeenCalledWith("new_task", "mode")
 		expect(mockCline.consecutiveMistakeCount).toBe(1)
@@ -371,14 +343,13 @@ describe("newTaskTool", () => {
 			partial: false,
 		}
 
-		await newTaskTool(
-			mockCline as any,
-			block,
-			mockAskApproval,
-			mockHandleError,
-			mockPushToolResult,
-			mockRemoveClosingTag,
-		)
+		await newTaskTool.handle(mockCline as any, block as ToolUse<"new_task">, {
+			askApproval: mockAskApproval,
+			handleError: mockHandleError,
+			pushToolResult: mockPushToolResult,
+			removeClosingTag: mockRemoveClosingTag,
+			toolProtocol: "xml",
+		})
 
 		expect(mockSayAndCreateMissingParamError).toHaveBeenCalledWith("new_task", "message")
 		expect(mockCline.consecutiveMistakeCount).toBe(1)
@@ -397,26 +368,22 @@ describe("newTaskTool", () => {
 			partial: false,
 		}
 
-		await newTaskTool(
-			mockCline as any,
-			block,
-			mockAskApproval,
-			mockHandleError,
-			mockPushToolResult,
-			mockRemoveClosingTag,
-		)
+		await newTaskTool.handle(mockCline as any, block as ToolUse<"new_task">, {
+			askApproval: mockAskApproval,
+			handleError: mockHandleError,
+			pushToolResult: mockPushToolResult,
+			removeClosingTag: mockRemoveClosingTag,
+			toolProtocol: "xml",
+		})
 
-		expect(mockCreateTask).toHaveBeenCalledWith(
+		expect(mockStartSubtask).toHaveBeenCalledWith(
 			"Test message",
-			undefined,
-			mockCline,
-			expect.objectContaining({
-				initialTodos: expect.arrayContaining([
-					expect.objectContaining({ content: "Pending task", status: "pending" }),
-					expect.objectContaining({ content: "Completed task", status: "completed" }),
-					expect.objectContaining({ content: "In progress task", status: "in_progress" }),
-				]),
-			}),
+			expect.arrayContaining([
+				expect.objectContaining({ content: "Pending task", status: "pending" }),
+				expect.objectContaining({ content: "Completed task", status: "completed" }),
+				expect.objectContaining({ content: "In progress task", status: "in_progress" }),
+			]),
+			"code",
 		)
 	})
 
@@ -439,14 +406,13 @@ describe("newTaskTool", () => {
 				partial: false,
 			}
 
-			await newTaskTool(
-				mockCline as any,
-				block,
-				mockAskApproval,
-				mockHandleError,
-				mockPushToolResult,
-				mockRemoveClosingTag,
-			)
+			await newTaskTool.handle(mockCline as any, block as ToolUse<"new_task">, {
+				askApproval: mockAskApproval,
+				handleError: mockHandleError,
+				pushToolResult: mockPushToolResult,
+				removeClosingTag: mockRemoveClosingTag,
+				toolProtocol: "xml",
+			})
 
 			// Should NOT error when todos is missing and setting is disabled
 			expect(mockSayAndCreateMissingParamError).not.toHaveBeenCalledWith("new_task", "todos")
@@ -454,14 +420,7 @@ describe("newTaskTool", () => {
 			expect(mockCline.recordToolError).not.toHaveBeenCalledWith("new_task")
 
 			// Should create task with empty todos array
-			expect(mockCreateTask).toHaveBeenCalledWith(
-				"Test message",
-				undefined,
-				mockCline,
-				expect.objectContaining({
-					initialTodos: [],
-				}),
-			)
+			expect(mockStartSubtask).toHaveBeenCalledWith("Test message", [], "code")
 
 			// Should complete successfully
 			expect(mockPushToolResult).toHaveBeenCalledWith(expect.stringContaining("Successfully created new task"))
@@ -485,14 +444,13 @@ describe("newTaskTool", () => {
 				partial: false,
 			}
 
-			await newTaskTool(
-				mockCline as any,
-				block,
-				mockAskApproval,
-				mockHandleError,
-				mockPushToolResult,
-				mockRemoveClosingTag,
-			)
+			await newTaskTool.handle(mockCline as any, block as ToolUse<"new_task">, {
+				askApproval: mockAskApproval,
+				handleError: mockHandleError,
+				pushToolResult: mockPushToolResult,
+				removeClosingTag: mockRemoveClosingTag,
+				toolProtocol: "xml",
+			})
 
 			// Should error when todos is missing and setting is enabled
 			expect(mockSayAndCreateMissingParamError).toHaveBeenCalledWith("new_task", "todos")
@@ -500,7 +458,7 @@ describe("newTaskTool", () => {
 			expect(mockCline.recordToolError).toHaveBeenCalledWith("new_task")
 
 			// Should NOT create task
-			expect(mockCreateTask).not.toHaveBeenCalled()
+			expect(mockStartSubtask).not.toHaveBeenCalled()
 			expect(mockPushToolResult).not.toHaveBeenCalledWith(
 				expect.stringContaining("Successfully created new task"),
 			)
@@ -524,30 +482,26 @@ describe("newTaskTool", () => {
 				partial: false,
 			}
 
-			await newTaskTool(
-				mockCline as any,
-				block,
-				mockAskApproval,
-				mockHandleError,
-				mockPushToolResult,
-				mockRemoveClosingTag,
-			)
+			await newTaskTool.handle(mockCline as any, block as ToolUse<"new_task">, {
+				askApproval: mockAskApproval,
+				handleError: mockHandleError,
+				pushToolResult: mockPushToolResult,
+				removeClosingTag: mockRemoveClosingTag,
+				toolProtocol: "xml",
+			})
 
 			// Should NOT error when todos is provided and setting is enabled
 			expect(mockSayAndCreateMissingParamError).not.toHaveBeenCalledWith("new_task", "todos")
 			expect(mockCline.consecutiveMistakeCount).toBe(0)
 
 			// Should create task with parsed todos
-			expect(mockCreateTask).toHaveBeenCalledWith(
+			expect(mockStartSubtask).toHaveBeenCalledWith(
 				"Test message",
-				undefined,
-				mockCline,
-				expect.objectContaining({
-					initialTodos: expect.arrayContaining([
-						expect.objectContaining({ content: "First task" }),
-						expect.objectContaining({ content: "Second task" }),
-					]),
-				}),
+				expect.arrayContaining([
+					expect.objectContaining({ content: "First task" }),
+					expect.objectContaining({ content: "Second task" }),
+				]),
+				"code",
 			)
 
 			// Should complete successfully
@@ -572,28 +526,20 @@ describe("newTaskTool", () => {
 				partial: false,
 			}
 
-			await newTaskTool(
-				mockCline as any,
-				block,
-				mockAskApproval,
-				mockHandleError,
-				mockPushToolResult,
-				mockRemoveClosingTag,
-			)
+			await newTaskTool.handle(mockCline as any, block as ToolUse<"new_task">, {
+				askApproval: mockAskApproval,
+				handleError: mockHandleError,
+				pushToolResult: mockPushToolResult,
+				removeClosingTag: mockRemoveClosingTag,
+				toolProtocol: "xml",
+			})
 
 			// Should NOT error when todos is empty string and setting is enabled
 			expect(mockSayAndCreateMissingParamError).not.toHaveBeenCalledWith("new_task", "todos")
 			expect(mockCline.consecutiveMistakeCount).toBe(0)
 
 			// Should create task with empty todos array
-			expect(mockCreateTask).toHaveBeenCalledWith(
-				"Test message",
-				undefined,
-				mockCline,
-				expect.objectContaining({
-					initialTodos: [],
-				}),
-			)
+			expect(mockStartSubtask).toHaveBeenCalledWith("Test message", [], "code")
 
 			// Should complete successfully
 			expect(mockPushToolResult).toHaveBeenCalledWith(expect.stringContaining("Successfully created new task"))
@@ -616,14 +562,13 @@ describe("newTaskTool", () => {
 				partial: false,
 			}
 
-			await newTaskTool(
-				mockCline as any,
-				block,
-				mockAskApproval,
-				mockHandleError,
-				mockPushToolResult,
-				mockRemoveClosingTag,
-			)
+			await newTaskTool.handle(mockCline as any, block as ToolUse<"new_task">, {
+				askApproval: mockAskApproval,
+				handleError: mockHandleError,
+				pushToolResult: mockPushToolResult,
+				removeClosingTag: mockRemoveClosingTag,
+				toolProtocol: "xml",
+			})
 
 			// Verify that VSCode configuration was accessed with Package.name
 			expect(mockGetConfiguration).toHaveBeenCalledWith("alchemi-code")
@@ -652,14 +597,13 @@ describe("newTaskTool", () => {
 				partial: false,
 			}
 
-			await newTaskTool(
-				mockCline as any,
-				block,
-				mockAskApproval,
-				mockHandleError,
-				mockPushToolResult,
-				mockRemoveClosingTag,
-			)
+			await newTaskTool.handle(mockCline as any, block as ToolUse<"new_task">, {
+				askApproval: mockAskApproval,
+				handleError: mockHandleError,
+				pushToolResult: mockPushToolResult,
+				removeClosingTag: mockRemoveClosingTag,
+				toolProtocol: "xml",
+			})
 
 			// Assert: configuration was read using the dynamic nightly namespace
 			expect(mockGetConfiguration).toHaveBeenCalledWith("roo-code-nightly")

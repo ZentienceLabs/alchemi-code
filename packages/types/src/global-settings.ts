@@ -30,6 +30,21 @@ export const DEFAULT_WRITE_DELAY_MS = 1000
 export const DEFAULT_TERMINAL_OUTPUT_CHARACTER_LIMIT = 50_000
 
 /**
+ * Minimum checkpoint timeout in seconds.
+ */
+export const MIN_CHECKPOINT_TIMEOUT_SECONDS = 10
+
+/**
+ * Maximum checkpoint timeout in seconds.
+ */
+export const MAX_CHECKPOINT_TIMEOUT_SECONDS = 60
+
+/**
+ * Default checkpoint timeout in seconds.
+ */
+export const DEFAULT_CHECKPOINT_TIMEOUT_SECONDS = 15
+
+/**
  * GlobalSettings
  */
 
@@ -41,6 +56,12 @@ export const globalSettingsSchema = z.object({
 	lastShownAnnouncementId: z.string().optional(),
 	customInstructions: z.string().optional(),
 	taskHistory: z.array(historyItemSchema).optional(),
+	dismissedUpsells: z.array(z.string()).optional(),
+
+	// Image generation settings (experimental) - flattened for simplicity
+	imageGenerationProvider: z.enum(["openrouter", "roo"]).optional(),
+	openRouterImageApiKey: z.string().optional(),
+	openRouterImageGenerationSelectedModel: z.string().optional(),
 
 	condensingApiConfigId: z.string().optional(),
 	customCondensingPrompt: z.string().optional(),
@@ -74,6 +95,23 @@ export const globalSettingsSchema = z.object({
 	maxConcurrentFileReads: z.number().optional(),
 
 	/**
+	 * Whether to include current time in the environment details
+	 * @default true
+	 */
+	includeCurrentTime: z.boolean().optional(),
+	/**
+	 * Whether to include current cost in the environment details
+	 * @default true
+	 */
+	includeCurrentCost: z.boolean().optional(),
+	/**
+	 * Maximum number of git status file entries to include in the environment details.
+	 * Set to 0 to disable git status. The header (branch, commits) is always included when > 0.
+	 * @default 0
+	 */
+	maxGitStatusFiles: z.number().optional(),
+
+	/**
 	 * Whether to include diagnostic messages (errors, warnings) in tool outputs
 	 * @default true
 	 */
@@ -92,6 +130,12 @@ export const globalSettingsSchema = z.object({
 	cachedChromeHostUrl: z.string().optional(),
 
 	enableCheckpoints: z.boolean().optional(),
+	checkpointTimeout: z
+		.number()
+		.int()
+		.min(MIN_CHECKPOINT_TIMEOUT_SECONDS)
+		.max(MAX_CHECKPOINT_TIMEOUT_SECONDS)
+		.optional(),
 
 	ttsEnabled: z.boolean().optional(),
 	ttsSpeed: z.number().optional(),
@@ -134,8 +178,6 @@ export const globalSettingsSchema = z.object({
 	mcpEnabled: z.boolean().optional(),
 	enableMcpServerCreation: z.boolean().optional(),
 
-	remoteControlEnabled: z.boolean().optional(),
-
 	mode: z.string().optional(),
 	modeApiConfigs: z.record(z.string(), z.string()).optional(),
 	customModes: z.array(modeConfigSchema).optional(),
@@ -144,6 +186,7 @@ export const globalSettingsSchema = z.object({
 	enhancementApiConfigId: z.string().optional(),
 	includeTaskHistoryInEnhance: z.boolean().optional(),
 	historyPreviewCollapsed: z.boolean().optional(),
+	reasoningBlockCollapsed: z.boolean().optional(),
 	profileThresholds: z.record(z.string(), z.number()).optional(),
 	hasOpenedModeSelector: z.boolean().optional(),
 	lastModeExportPath: z.string().optional(),
@@ -174,6 +217,7 @@ export const SECRET_STATE_KEYS = [
 	"awsSecretKey",
 	"awsSessionToken",
 	"openAiApiKey",
+	"ollamaApiKey",
 	"geminiApiKey",
 	"openAiNativeApiKey",
 	"cerebrasApiKey",
@@ -181,28 +225,47 @@ export const SECRET_STATE_KEYS = [
 	"doubaoApiKey",
 	"moonshotApiKey",
 	"mistralApiKey",
+	"minimaxApiKey",
 	"unboundApiKey",
 	"requestyApiKey",
 	"xaiApiKey",
 	"groqApiKey",
 	"chutesApiKey",
 	"litellmApiKey",
+	"deepInfraApiKey",
 	"codeIndexOpenAiKey",
 	"codeIndexQdrantApiKey",
 	"codebaseIndexOpenAiCompatibleApiKey",
 	"codebaseIndexGeminiApiKey",
 	"codebaseIndexMistralApiKey",
+	"codebaseIndexVercelAiGatewayApiKey",
+	"codebaseIndexOpenRouterApiKey",
 	"huggingFaceApiKey",
 	"sambaNovaApiKey",
 	"zaiApiKey",
 	"fireworksApiKey",
 	"featherlessApiKey",
 	"ioIntelligenceApiKey",
-] as const satisfies readonly (keyof ProviderSettings)[]
-export type SecretState = Pick<ProviderSettings, (typeof SECRET_STATE_KEYS)[number]>
+	"vercelAiGatewayApiKey",
+	"basetenApiKey",
+] as const
+
+// Global secrets that are part of GlobalSettings (not ProviderSettings)
+export const GLOBAL_SECRET_KEYS = [
+	"openRouterImageApiKey", // For image generation
+] as const
+
+// Type for the actual secret storage keys
+type ProviderSecretKey = (typeof SECRET_STATE_KEYS)[number]
+type GlobalSecretKey = (typeof GLOBAL_SECRET_KEYS)[number]
+
+// Type representing all secrets that can be stored
+export type SecretState = Pick<ProviderSettings, Extract<ProviderSecretKey, keyof ProviderSettings>> & {
+	[K in GlobalSecretKey]?: string
+}
 
 export const isSecretStateKey = (key: string): key is Keys<SecretState> =>
-	SECRET_STATE_KEYS.includes(key as Keys<SecretState>)
+	SECRET_STATE_KEYS.includes(key as ProviderSecretKey) || GLOBAL_SECRET_KEYS.includes(key as GlobalSecretKey)
 
 /**
  * GlobalState
@@ -211,7 +274,7 @@ export const isSecretStateKey = (key: string): key is Keys<SecretState> =>
 export type GlobalState = Omit<RooCodeSettings, Keys<SecretState>>
 
 export const GLOBAL_STATE_KEYS = [...GLOBAL_SETTINGS_KEYS, ...PROVIDER_SETTINGS_KEYS].filter(
-	(key: Keys<RooCodeSettings>) => !SECRET_STATE_KEYS.includes(key as Keys<SecretState>),
+	(key: Keys<RooCodeSettings>) => !isSecretStateKey(key),
 ) as Keys<GlobalState>[]
 
 export const isGlobalStateKey = (key: string): key is Keys<GlobalState> =>
@@ -284,6 +347,7 @@ export const EVALS_SETTINGS: RooCodeSettings = {
 	rateLimitSeconds: 0,
 	maxOpenTabsContext: 20,
 	maxWorkspaceFiles: 200,
+	maxGitStatusFiles: 20,
 	showRooIgnoredFiles: true,
 	maxReadFileLine: -1, // -1 to enable full file reading.
 
@@ -294,8 +358,6 @@ export const EVALS_SETTINGS: RooCodeSettings = {
 	telemetrySetting: "enabled",
 
 	mcpEnabled: false,
-
-	remoteControlEnabled: false,
 
 	mode: "code", // "architect",
 

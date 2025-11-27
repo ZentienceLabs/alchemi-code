@@ -109,21 +109,16 @@ Spraw, aby Alchemi Code działał po Twojemu za pomocą:
 
 ## Zasoby
 
-### Dokumentacja
-
-- [Podstawowy przewodnik użytkowania](https://docs.roocode.com/basic-usage/the-chat-interface)
-- [Zaawansowane funkcje](https://docs.roocode.com/advanced-usage/auto-approving-actions)
-- [Często zadawane pytania](https://docs.roocode.com/faq)
-
-### Społeczność
-
-- **Discord:** [Dołącz do naszego serwera Discord](https://discord.gg/roocode), aby uzyskać pomoc w czasie rzeczywistym i dyskusje
-- **Reddit:** [Odwiedź nasz subreddit](https://www.reddit.com/r/RooCode), aby dzielić się doświadczeniami i wskazówkami
-- **GitHub:** [Zgłaszaj problemy](https://github.com/RooCodeInc/Roo-Code/issues) lub [proś o funkcje](https://github.com/RooCodeInc/Roo-Code/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop)
+- **[Dokumentacja](https://docs.roocode.com):** Oficjalny przewodnik po instalacji, konfiguracji i opanowaniu Roo Code.
+- **[Kanał YouTube](https://youtube.com/@roocodeyt?feature=shared):** Oglądaj samouczki i zobacz funkcje w akcji.
+- **[Serwer Discord](https://discord.gg/roocode):** Dołącz do społeczności, aby uzyskać pomoc i dyskutować w czasie rzeczywistym.
+- **[Społeczność Reddit](https://www.reddit.com/r/RooCode):** Dziel się swoimi doświadczeniami i zobacz, co budują inni.
+- **[Problemy na GitHub](https://github.com/RooCodeInc/Roo-Code/issues):** Zgłaszaj błędy i śledź rozwój.
+- **[Prośby o funkcje](https://github.com/RooCodeInc/Roo-Code/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop):** Masz pomysł? Podziel się nim z deweloperami.
 
 ---
 
-## Lokalna konfiguracja i rozwój
+## Konfiguracja lokalna i programowanie
 
 1. **Sklonuj** repozytorium:
 
@@ -134,10 +129,25 @@ git clone https://github.com/RooCodeInc/Roo-Code.git
 2. **Zainstaluj zależności**:
 
 ```sh
-npm run install:all
+pnpm install
 ```
 
-3. **Uruchom webview (aplikację Vite/React z HMR)**:
+3. **Uruchom rozszerzenie**:
+
+Istnieje kilka sposobów na uruchomienie rozszerzenia Roo Code:
+
+### Tryb deweloperski (F5)
+
+Do aktywnego programowania użyj wbudowanego debugowania VSCode:
+
+Naciśnij `F5` (lub przejdź do **Uruchom** → **Rozpocznij debugowanie**) w VSCode. Otworzy to nowe okno VSCode z uruchomionym rozszerzeniem Roo Code.
+
+- Zmiany w widoku internetowym pojawią się natychmiast.
+- Zmiany w rdzeniu rozszerzenia również zostaną automatycznie przeładowane na gorąco.
+
+### Zautomatyzowana instalacja VSIX
+
+Aby zbudować i zainstalować rozszerzenie jako pakiet VSIX bezpośrednio w VSCode:
 
 ```sh
 npm run dev
@@ -160,7 +170,9 @@ Plik `.vsix` pojawi się w katalogu `bin/` i można go zainstalować za pomocą:
 code --install-extension bin/roo-cline-<version>.vsix
 ```
 
-Używamy [changesets](https://github.com/changesets/changesets) do wersjonowania i publikowania. Sprawdź nasz `CHANGELOG.md`, aby zobaczyć informacje o wydaniu.
+---
+
+Używamy [changesets](https://github.com/changesets/changesets) do wersjonowania i publikowania. Sprawdź nasz `CHANGELOG.md`, aby uzyskać informacje o wydaniu.
 
 ---
 
@@ -172,7 +184,7 @@ Używamy [changesets](https://github.com/changesets/changesets) do wersjonowania
 
 ## Wkład
 
-Kochamy wkład społeczności! Zacznij od przeczytania naszego [CONTRIBUTING.md](CONTRIBUTING.md).
+Uwielbiamy wkłady społeczności! Zacznij od przeczytania naszego pliku [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 

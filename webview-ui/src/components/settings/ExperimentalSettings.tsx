@@ -1,7 +1,7 @@
 import { HTMLAttributes } from "react"
 import { FlaskConical } from "lucide-react"
 
-import type { Experiments } from "@roo-code/types"
+import type { Experiments, ImageGenerationProvider } from "@roo-code/types"
 
 import { EXPERIMENT_IDS, experimentConfigsMap } from "@roo/experiments"
 
@@ -12,15 +12,32 @@ import { SetExperimentEnabled } from "./types"
 import { SectionHeader } from "./SectionHeader"
 import { Section } from "./Section"
 import { ExperimentalFeature } from "./ExperimentalFeature"
+import { ImageGenerationSettings } from "./ImageGenerationSettings"
 
 type ExperimentalSettingsProps = HTMLAttributes<HTMLDivElement> & {
 	experiments: Experiments
 	setExperimentEnabled: SetExperimentEnabled
+	apiConfiguration?: any
+	setApiConfigurationField?: any
+	imageGenerationProvider?: ImageGenerationProvider
+	openRouterImageApiKey?: string
+	openRouterImageGenerationSelectedModel?: string
+	setImageGenerationProvider?: (provider: ImageGenerationProvider) => void
+	setOpenRouterImageApiKey?: (apiKey: string) => void
+	setImageGenerationSelectedModel?: (model: string) => void
 }
 
 export const ExperimentalSettings = ({
 	experiments,
 	setExperimentEnabled,
+	apiConfiguration,
+	setApiConfigurationField,
+	imageGenerationProvider,
+	openRouterImageApiKey,
+	openRouterImageGenerationSelectedModel,
+	setImageGenerationProvider,
+	setOpenRouterImageApiKey,
+	setImageGenerationSelectedModel,
 	className,
 	...props
 }: ExperimentalSettingsProps) => {
@@ -48,6 +65,28 @@ export const ExperimentalSettings = ({
 									onChange={(enabled) =>
 										setExperimentEnabled(EXPERIMENT_IDS.MULTI_FILE_APPLY_DIFF, enabled)
 									}
+								/>
+							)
+						}
+						if (
+							config[0] === "IMAGE_GENERATION" &&
+							setImageGenerationProvider &&
+							setOpenRouterImageApiKey &&
+							setImageGenerationSelectedModel
+						) {
+							return (
+								<ImageGenerationSettings
+									key={config[0]}
+									enabled={experiments[EXPERIMENT_IDS.IMAGE_GENERATION] ?? false}
+									onChange={(enabled) =>
+										setExperimentEnabled(EXPERIMENT_IDS.IMAGE_GENERATION, enabled)
+									}
+									imageGenerationProvider={imageGenerationProvider}
+									openRouterImageApiKey={openRouterImageApiKey}
+									openRouterImageGenerationSelectedModel={openRouterImageGenerationSelectedModel}
+									setImageGenerationProvider={setImageGenerationProvider}
+									setOpenRouterImageApiKey={setOpenRouterImageApiKey}
+									setImageGenerationSelectedModel={setImageGenerationSelectedModel}
 								/>
 							)
 						}

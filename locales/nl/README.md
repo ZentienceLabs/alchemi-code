@@ -123,7 +123,7 @@ Laat Alchemi Code werken zoals jij wilt met:
 
 ---
 
-## Lokale installatie & ontwikkeling
+## Lokale setup & ontwikkeling
 
 1. **Kloon** de repo:
 
@@ -134,10 +134,25 @@ git clone https://github.com/RooCodeInc/Roo-Code.git
 2. **Installeer afhankelijkheden**:
 
 ```sh
-npm run install:all
+pnpm install
 ```
 
-3. **Start de webview (Vite/React-app met HMR)**:
+3. **Voer de extensie uit**:
+
+Er zijn verschillende manieren om de Roo Code-extensie uit te voeren:
+
+### Ontwikkelmodus (F5)
+
+Gebruik voor actieve ontwikkeling de ingebouwde foutopsporing van VSCode:
+
+Druk op `F5` (of ga naar **Uitvoeren** → **Foutopsporing starten**) in VSCode. Dit opent een nieuw VSCode-venster waarin de Roo Code-extensie wordt uitgevoerd.
+
+- Wijzigingen in de webweergave verschijnen onmiddellijk.
+- Wijzigingen in de kernextensie worden ook automatisch hot-herladen.
+
+### Geautomatiseerde VSIX-installatie
+
+Om de extensie als een VSIX-pakket te bouwen en rechtstreeks in VSCode te installeren:
 
 ```sh
 npm run dev

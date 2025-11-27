@@ -1,16 +1,69 @@
-<div align="center">
-<sub>
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=RooVeterinaryInc.roo-cline"><img src="https://img.shields.io/badge/VS_Code_Marketplace-007ACC?style=flat&logo=visualstudiocode&logoColor=white" alt="VS Code Marketplace"></a>
+  <a href="https://x.com/roocode"><img src="https://img.shields.io/badge/roocode-000000?style=flat&logo=x&logoColor=white" alt="X"></a>
+  <a href="https://youtube.com/@roocodeyt?feature=shared"><img src="https://img.shields.io/badge/YouTube-FF0000?style=flat&logo=youtube&logoColor=white" alt="YouTube"></a>
+  <a href="https://discord.gg/roocode"><img src="https://img.shields.io/badge/Join%20Discord-5865F2?style=flat&logo=discord&logoColor=white" alt="Join Discord"></a>
+  <a href="https://www.reddit.com/r/RooCode/"><img src="https://img.shields.io/badge/Join%20r%2FRooCode-FF4500?style=flat&logo=reddit&logoColor=white" alt="Join r/RooCode"></a>
+</p>
+<p align="center">
+  <em>Nhận trợ giúp nhanh → <a href="https://discord.gg/roocode">Tham gia Discord</a> • Thích không đồng bộ? → <a href="https://www.reddit.com/r/RooCode/">Tham gia r/RooCode</a></em>
+</p>
 
-[English](../../README.md) • [Català](../ca/README.md) • [Deutsch](../de/README.md) • [Español](../es/README.md) • [Français](../fr/README.md) • [हिन्दी](../hi/README.md) • [Bahasa Indonesia](../id/README.md) • [Italiano](../it/README.md) • [日本語](../ja/README.md)
+# Roo Code
 
-</sub>
-<sub>
+> Đội ngũ dev dùng AI của bạn, ngay trong trình chỉnh sửa
 
-[한국어](../ko/README.md) • [Nederlands](../nl/README.md) • [Polski](../pl/README.md) • [Português (BR)](../pt-BR/README.md) • [Русский](../ru/README.md) • [Türkçe](../tr/README.md) • <b>Tiếng Việt</b> • [简体中文](../zh-CN/README.md) • [繁體中文](../zh-TW/README.md)
+<details>
+  <summary>🌐 Các ngôn ngữ có sẵn</summary>
 
-</sub>
-</div>
-<br>
+- [English](../../README.md)
+- [Català](../ca/README.md)
+- [Deutsch](../de/README.md)
+- [Español](../es/README.md)
+- [Français](../fr/README.md)
+- [हिंदी](../hi/README.md)
+- [Bahasa Indonesia](../id/README.md)
+- [Italiano](../it/README.md)
+- [日本語](../ja/README.md)
+- [한국어](../ko/README.md)
+- [Nederlands](../nl/README.md)
+- [Polski](../pl/README.md)
+- [Português (BR)](../pt-BR/README.md)
+- [Русский](../ru/README.md)
+- [Türkçe](../tr/README.md)
+- [Tiếng Việt](../vi/README.md)
+- [简体中文](../zh-CN/README.md)
+- [繁體中文](../zh-TW/README.md)
+- ...
+  </details>
+
+---
+
+## Roo Code có thể làm gì cho BẠN?
+
+- Tạo mã từ mô tả ngôn ngữ tự nhiên
+- Thích ứng với các Chế độ: Mã, Kiến trúc sư, Hỏi, Gỡ lỗi và Chế độ tùy chỉnh
+- Tái cấu trúc & gỡ lỗi mã hiện có
+- Viết & cập nhật tài liệu
+- Trả lời câu hỏi về cơ sở mã của bạn
+- Tự động hóa các tác vụ lặp đi lặp lại
+- Sử dụng Máy chủ MCP
+
+## Chế độ
+
+Roo Code thích ứng với cách bạn làm việc, chứ không phải ngược lại:
+
+- Chế độ Mã: viết mã hàng ngày, chỉnh sửa và các thao tác với tệp
+- Chế độ Kiến trúc sư: lập kế hoạch hệ thống, thông số kỹ thuật và di chuyển
+- Chế độ Hỏi: câu trả lời nhanh, giải thích và tài liệu
+- Chế độ Gỡ lỗi: theo dõi sự cố, thêm nhật ký, cô lập nguyên nhân gốc rễ
+- Chế độ Tùy chỉnh: xây dựng các chế độ chuyên biệt cho nhóm hoặc quy trình làm việc của bạn
+- Roomote Control: Roomote Control cho phép bạn điều khiển từ xa các tác vụ đang chạy trên VS Code cục bộ của bạn.
+
+Xem thêm: [Sử dụng Chế độ](https://docs.roocode.com/basic-usage/using-modes) • [Chế độ tùy chỉnh](https://docs.roocode.com/advanced-usage/custom-modes) • [Roomote Control](https://docs.roocode.com/roo-code-cloud/roomote-control)
+
+## Video hướng dẫn & tính năng
+
 <div align="center">
   <h2>Tham Gia Cộng Đồng Alchemi Code</h2>
   <p>Kết nối với các nhà phát triển, đóng góp ý tưởng và cập nhật với các công cụ lập trình mới nhất được hỗ trợ bởi AI.</p>
@@ -123,21 +176,36 @@ Làm cho Alchemi Code hoạt động theo cách của bạn với:
 
 ---
 
-## Thiết Lập & Phát Triển Cục Bộ
+## Cài đặt và phát triển cục bộ
 
-1. **Clone** kho lưu trữ:
+1. **Sao chép** kho lưu trữ:
 
 ```sh
 git clone https://github.com/RooCodeInc/Roo-Code.git
 ```
 
-2. **Cài đặt các phụ thuộc**:
+2. **Cài đặt các dependency**:
 
 ```sh
-npm run install:all
+pnpm install
 ```
 
-3. **Khởi động webview (ứng dụng Vite/React với HMR)**:
+3. **Chạy phần mở rộng**:
+
+Có một số cách để chạy phần mở rộng Roo Code:
+
+### Chế độ phát triển (F5)
+
+Để phát triển tích cực, hãy sử dụng tính năng gỡ lỗi tích hợp của VSCode:
+
+Nhấn `F5` (hoặc vào **Run** → **Start Debugging**) trong VSCode. Thao tác này sẽ mở một cửa sổ VSCode mới với phần mở rộng Roo Code đang chạy.
+
+- Các thay đổi đối với webview sẽ xuất hiện ngay lập tức.
+- Các thay đổi đối với phần mở rộng cốt lõi cũng sẽ tự động được tải lại nóng.
+
+### Cài đặt VSIX tự động
+
+Để xây dựng và cài đặt phần mở rộng dưới dạng gói VSIX trực tiếp vào VSCode:
 
 ```sh
 npm run dev
@@ -164,15 +232,15 @@ Chúng tôi sử dụng [changesets](https://github.com/changesets/changesets) �
 
 ---
 
-## Tuyên Bố Miễn Trừ Trách Nhiệm
+## Tuyên bố miễn trừ trách nhiệm
 
 **Xin lưu ý** rằng Alchemi Code, Inc **không** đưa ra bất kỳ tuyên bố hoặc bảo đảm nào liên quan đến bất kỳ mã, mô hình, hoặc công cụ khác được cung cấp hoặc cung cấp liên quan đến Alchemi Code, bất kỳ công cụ bên thứ ba liên quan, hoặc bất kỳ đầu ra nào. Bạn chịu **tất cả rủi ro** liên quan đến việc sử dụng bất kỳ công cụ hoặc đầu ra như vậy; các công cụ đó được cung cấp trên cơ sở **"NGUYÊN TRẠNG"** và **"NHƯ CÓ SẴN"**. Những rủi ro đó có thể bao gồm, không giới hạn, vi phạm sở hữu trí tuệ, lỗ hổng mạng hoặc tấn công, thành kiến, không chính xác, lỗi, khiếm khuyết, virus, thời gian ngừng hoạt động, mất mát hoặc hư hỏng tài sản, và/hoặc thương tích cá nhân. Bạn hoàn toàn chịu trách nhiệm về việc sử dụng bất kỳ công cụ hoặc đầu ra như vậy (bao gồm, không giới hạn, tính hợp pháp, phù hợp và kết quả của chúng).
 
 ---
 
-## Đóng Góp
+## Đóng góp
 
-Chúng tôi rất hoan nghênh đóng góp từ cộng đồng! Bắt đầu bằng cách đọc [CONTRIBUTING.md](CONTRIBUTING.md) của chúng tôi.
+Chúng tôi yêu thích những đóng góp của cộng đồng! Bắt đầu bằng cách đọc [CONTRIBUTING.md](CONTRIBUTING.md) của chúng tôi.
 
 ---
 
